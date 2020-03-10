@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class CellsAnalyzer {
     Field field;
     Figure.Type fType;
-    ;
+
     Figure.Color fColor;
     Cell cell;
     int thisX;
@@ -172,4 +172,24 @@ public class CellsAnalyzer {
     }
 
 
+    public void checkEnPassantMove() {
+        if (thisY == 5
+                && field.cellAt(thisX,thisY).getFigure().getType() == Figure.Type.PAWN
+                && field.cellAt(thisX,thisY).getFigure().getColor() == Figure.Color.WHITE
+                && field.cellAt(thisX,thisY-1).hasFigure()
+                && field.cellAt(thisX,thisY-1).getFigure().getType() == Figure.Type.PAWN
+                && field.cellAt(thisX,thisY-1).getFigure().getColor() == Figure.Color.BLACK
+                && field.cellAt(thisX,thisY-1).getFigure().getLastTurn() == field.cellAt(thisX,thisY).getFigure().getLastTurn() - 1) {
+            field.cellAt(thisX,thisY-1).removeFigure();
+        } else if (thisY == 2
+                && field.cellAt(thisX,thisY).getFigure().getType() == Figure.Type.PAWN
+                && field.cellAt(thisX,thisY).getFigure().getColor() == Figure.Color.BLACK
+                && field.cellAt(thisX,thisY+1).hasFigure()
+                && field.cellAt(thisX,thisY+1).getFigure().getType() == Figure.Type.PAWN
+                && field.cellAt(thisX,thisY+1).getFigure().getColor() == Figure.Color.WHITE
+                && field.cellAt(thisX,thisY+1).getFigure().getLastTurn() == field.cellAt(thisX,thisY).getFigure().getLastTurn() - 1) {
+            field.cellAt(thisX,thisY+1).removeFigure();
+        }
+
+    }
 }

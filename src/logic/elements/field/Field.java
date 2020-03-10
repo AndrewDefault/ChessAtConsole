@@ -29,7 +29,7 @@ public class Field {
 
     private void setupFigures() {
         for (int x = 0; x < 8; x++) {
-           // cells[1][x].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.PAWN));
+            // cells[1][x].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.PAWN));
             //cells[6][x].addFigure(new Figure(Figure.Color.BLACK, Figure.Type.PAWN));
         }
 
@@ -53,9 +53,9 @@ public class Field {
         cells[4][5].addFigure(new Figure(Figure.Color.BLACK, Figure.Type.PAWN));
         cells[4][5].getFigure().movePerformed(-1);
 
-        var a = cellsReachableFromThisCell(4,4);
+        var a = cellsReachableFromThisCell(4, 4);
 
-        for(var s : a){
+        for (var s : a) {
             s.addFigure(new Figure(Figure.Color.BLACK, Figure.Type.KING));
         }
 
@@ -74,17 +74,16 @@ public class Field {
     }
 
 
-
     public Cell cellAt(int x, int y) {
-        if(x < 0 || x > 7 || y <0 || y>7)
+        if (x < 0 || x > 7 || y < 0 || y > 7)
             return null;
 
         return cells[y][x];
     }
 
-    public ArrayList<Cell> cellsReachableFromThisCell(int startX, int startY){
+    public ArrayList<Cell> cellsReachableFromThisCell(int startX, int startY) {
 
-        return CellsAnalyzer.get(this, cellAt(startX,startY)).cellsForMove();
+        return CellsAnalyzer.get(this, cellAt(startX, startY)).cellsForMove();
     }
 
 
@@ -94,6 +93,9 @@ public class Field {
         end.addFigure(start.getFigure());
         start.removeFigure();
         end.getFigure().movePerformed(currentTurnCount++);
+
+        CellsAnalyzer.get(this,end).checkEnPassantMove();
+
     }
 
 
@@ -102,7 +104,7 @@ public class Field {
         boolean isBlack = false;
         StringBuilder str = new StringBuilder("  ┌────┬────┬────┬────┬────┬────┬────┬────┐\n");
         for (int y = 7; y >= 0; y--) {
-            str.append((y + 1) + " │");
+            str.append(y + 1).append(" │");
 
             for (int x = 0; x <= 7; x++) {
                 String filler = isBlack ? "■" : " ";
@@ -124,16 +126,14 @@ public class Field {
                         case QUEEN -> "Q";
                         case BISHOP -> "B";
                     };
-                    str.append(color + type);
+                    str.append(color).append(type);
                 }
 
                 str.append(filler).append("│");
                 isBlack = !isBlack;
             }
-            str.append("\n  " +
-                    ((y == 0) ? "└────┴────┴────┴────┴────┴────┴────┴────┘\n"
-                            : "├────┼────┼────┼────┼────┼────┼────┼────┤\n")
-            );
+            str.append("\n  ").append((y == 0) ? "└────┴────┴────┴────┴────┴────┴────┴────┘\n"
+                    : "├────┼────┼────┼────┼────┼────┼────┼────┤\n");
 
             isBlack = !isBlack;
         }
