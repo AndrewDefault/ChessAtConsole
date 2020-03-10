@@ -39,11 +39,15 @@ public class ConsoleInterface {
 
             if (Pattern.matches("[a-hA-H][1-8]\\s+[a-hA-H][1-8]", turn)) {
                 int[] args = transferCoodrd(turn);
-                if (!game.cellContainsCorrectFigureForMove(args[0], args[1])) {
+                var temp = game.cellContainsCorrectFigureForMove(args[0], args[1]);
+                if (temp == null || temp.isEmpty()) {
                     System.out.println("Wrong figure for this turn!");
-                } else if (!game.cellIsSuitableForMove(args[2], args[3])) {
+                    continue;
+                }
+                if (!game.cellIsSuitableForMove(args[0],args[1], args[2], args[3])) {
                     System.out.println("Wrong target!");
-                } else
+                    continue;
+                }
                     game.performMove(args[0], args[1], args[2], args[3]);
             }
         }
