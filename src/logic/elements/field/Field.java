@@ -46,16 +46,14 @@ public class Field {
 //            c = Figure.Color.BLACK;
 //        }
 
-        cells[0][4].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.KING)); //test
 
-        cells[0][0].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.ROOK));
-        cells[0][7].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.ROOK));
+        cellAt(3,3).addFigure(new Figure(Figure.Color.WHITE, Figure.Type.BISHOP));
+        cellAt(5,1).addFigure(new Figure(Figure.Color.BLACK, Figure.Type.PAWN));
+        var a = cellsReachableFromThisCell(3, 3);
 
-        var a = cellsReachableFromThisCell(4, 0);
-
-//        for (var s : a) {
-//            s.addFigure(new Figure(Figure.Color.BLACK, Figure.Type.KING));
-//        }
+        for (var s : a) {
+            s.addFigure(new Figure(Figure.Color.BLACK, Figure.Type.KING));
+        }
 
         whiteFigures = new ArrayList<>();
         blackFigures = new ArrayList<>();

@@ -29,33 +29,65 @@ public class ChessMovesAnalyzer {
     }
 
     ArrayList<Cell> PossibleCellsForMoves() {
+        return switch (fType) {
+            case HORSE -> horseMove();
+
+            case PAWN -> pawnMove();
+
+            case ROOK -> rookMove();
+
+            case KING -> kingMove();
+
+            case QUEEN -> queenMove();
+
+            case BISHOP -> bishopMove();
+        };
+
+
+    }
+
+    private ArrayList<Cell> bishopMove() {
+        return new ArrayList<>() {{
+            addAll(cellsToBotLeft());
+            addAll(cellsToTopLeft());
+            addAll(cellsToBotRight());
+            addAll(cellsToTopRight());
+        }};
+    }
+
+    private ArrayList<Cell> queenMove() {
+        return new ArrayList<>() {{
+            addAll(cellsToBotLeft());
+            addAll(cellsToTopLeft());
+            addAll(cellsToBotRight());
+            addAll(cellsToTopRight());
+            addAll(cellsToBot());
+            addAll(cellsToTop());
+            addAll(cellsToLeft());
+            addAll(cellsToRight());
+        }};
+    }
+
+    private ArrayList<Cell> horseMove() {
         var ret = new ArrayList<Cell>();
 
-        switch (fType) {
-            case BISHOP -> {
-
+        for (int x = thisX - 1; x <= thisX + 1; x += 2) {
+            for (int y = thisY - 2; y <= thisY + 2; y += 4) {
+                Cell temp = field.cellAt(x, y);
+                if (temp != null && (!temp.hasFigure() || temp.getFigure().getColor() != fColor))
+                    ret.add(temp);
             }
-            case QUEEN -> {
-
-            }
-            case HORSE -> {
-
-            }
-            case PAWN -> {
-                return pawnMove();
-
-            }
-            case ROOK -> {
-                return rookMove();
-            }
-
-            case KING -> {
-return kingMove();
-            }
-
         }
-
+        for (int x = thisX - 2; x <= thisX + 2; x += 4) {
+            for (int y = thisY - 1; y <= thisY + 1; y += 2) {
+                Cell temp = field.cellAt(x, y);
+                if (temp != null && (!temp.hasFigure() || temp.getFigure().getColor() != fColor))
+                    ret.add(temp);
+            }
+        }
         return ret;
+
+
     }
 
     private ArrayList<Cell> rookMove() {
@@ -120,9 +152,9 @@ return kingMove();
         int yOffset = 0;
         for (int i = 0; i < 2; i++) {
             if (right.size() == 2
-                    && cell.getFigure().getMovesCount()==0
+                    && cell.getFigure().getMovesCount() == 0
                     && field.cellAt(7, yOffset).hasFigure()
-                    && field.cellAt(7, yOffset).getFigure().getMovesCount()==0 )
+                    && field.cellAt(7, yOffset).getFigure().getMovesCount() == 0)
                 ret.add(field.cellAt(thisX + 2, thisY));
 
             if (left.size() == 3
@@ -133,10 +165,10 @@ return kingMove();
 
             yOffset = 7;
         }
-        for(int x = thisX-1; x <= thisX+1; x++){
-            for (int y = thisY-1; y <= thisY+1; y++){
-                Cell temp = field.cellAt(x,y);
-                if(temp != null && (!temp.hasFigure() || temp.getFigure().getColor()== Figure.Color.BLACK))
+        for (int x = thisX - 1; x <= thisX + 1; x++) {
+            for (int y = thisY - 1; y <= thisY + 1; y++) {
+                Cell temp = field.cellAt(x, y);
+                if (temp != null && (!temp.hasFigure() || temp.getFigure().getColor() != fColor))
                     ret.add(temp);
             }
         }
@@ -204,6 +236,78 @@ return kingMove();
         return ret;
     }
 
+    private ArrayList<Cell> cellsToTopRight() {
+        var ret = new ArrayList<Cell>();
+        for (int i = 1; i < 8; i++) {
+            Cell temp = field.cellAt(thisX+i,thisY+i);
+            if(temp != null){
+                if(temp.hasFigure()){
+                    if(temp.getFigure().getColor() != fColor){
+                        ret.add(temp);
+                        return ret;
+                    }
+                    return ret;
+                }
+                ret.add(temp);
+            }
+        }
+        return ret;
+    }
+
+    private ArrayList<Cell> cellsToTopLeft() {
+        var ret = new ArrayList<Cell>();
+        for (int i = 1; i < 8; i++) {
+            Cell temp = field.cellAt(thisX-i,thisY+i);
+            if(temp != null){
+                if(temp.hasFigure()){
+                    if(temp.getFigure().getColor() != fColor){
+                        ret.add(temp);
+                        return ret;
+                    }
+                    return ret;
+                }
+                ret.add(temp);
+            }
+        }
+        return ret;
+    }
+
+    private ArrayList<Cell> cellsToBotRight() {
+        var ret = new ArrayList<Cell>();
+        for (int i = 1; i < 8; i++) {
+            Cell temp = field.cellAt(thisX+i,thisY-i);
+            if(temp != null){
+                if(temp.hasFigure()){
+                    if(temp.getFigure().getColor() != fColor){
+                        ret.add(temp);
+                        return ret;
+                    }
+                    return ret;
+                }
+                ret.add(temp);
+            }
+        }
+        return ret;
+    }
+
+    private ArrayList<Cell> cellsToBotLeft() {
+        var ret = new ArrayList<Cell>();
+        for (int i = 1; i < 8; i++) {
+            Cell temp = field.cellAt(thisX-i,thisY-i);
+            if(temp != null){
+                if(temp.hasFigure()){
+                    if(temp.getFigure().getColor() != fColor){
+                        ret.add(temp);
+                        return ret;
+                    }
+                    return ret;
+                }
+                ret.add(temp);
+            }
+        }
+        return ret;
+    }
+
 
     public ChessMovesAnalyzer checkEnPassantMove() {
         if (thisY == 5
@@ -227,14 +331,14 @@ return kingMove();
     }
 
     public ChessMovesAnalyzer checkRoqueMove() {
-        int yOffset = fColor == Figure.Color.WHITE? 0 : 7;
+        int yOffset = fColor == Figure.Color.WHITE ? 0 : 7;
 
-        if(fType== Figure.Type.KING && thisX == 2
-        && cell.getFigure().getMovesCount()==1)
-            field.moveFigure(0,yOffset,3,yOffset);
-        if(fType== Figure.Type.KING && thisX == 6
-                && cell.getFigure().getMovesCount()==1)
-            field.moveFigure(7,yOffset,5,yOffset);
+        if (fType == Figure.Type.KING && thisX == 2
+                && cell.getFigure().getMovesCount() == 1)
+            field.moveFigure(0, yOffset, 3, yOffset);
+        if (fType == Figure.Type.KING && thisX == 6
+                && cell.getFigure().getMovesCount() == 1)
+            field.moveFigure(7, yOffset, 5, yOffset);
         return this;
     }
 }
