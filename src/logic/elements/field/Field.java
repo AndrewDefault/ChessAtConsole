@@ -42,6 +42,7 @@ public class Field {
             c = Figure.Color.BLACK;
         }
 
+
         for (var cellLine : cells) {
             for (var cell : cellLine) {
                 if (cell.hasFigure()) {
