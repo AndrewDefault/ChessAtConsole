@@ -3,18 +3,22 @@ package logic.elements;
 public class Figure {
     private Color color;
     private Type type;
-    private boolean isTouched;
+    private int movesCount;
     private  int lastTurn;
 
     public Figure(Color color, Type type) {
         this.color = color;
         this.type = type;
-        isTouched = false;
+        movesCount = 0;
         lastTurn = 0;
     }
 
-    public boolean isTouched() {
-        return isTouched;
+    public int getLastTurn() {
+        return lastTurn;
+    }
+
+    public int getMovesCount() {
+        return movesCount;
     }
 
     public Type getType() {
@@ -27,11 +31,7 @@ public class Figure {
 
     public void movePerformed(int k) {
         lastTurn = k;
-        isTouched = true;
-    }
-
-    public int getLastTurn() {
-        return lastTurn;
+        movesCount++;
     }
 
     public enum Color {BLACK, WHITE}
