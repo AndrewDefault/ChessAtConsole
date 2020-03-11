@@ -43,12 +43,12 @@ public class Game {
     public ArrayList<Cell> cellContainsCorrectFigureForMove(int startX, int startY) {
         if(field.cellAt(startX, startY).hasFigure()
                 && field.cellAt(startX, startY).getFigure().getColor() == whoMoves)
-        return field.cellsReachableFromThisCell(startX, startY);
+        return field.cellsForCorrectMoves(startX, startY);
         return null;
     }
 
     public boolean cellIsSuitableForMove(int startX, int startY, int endX, int endY) {
-        var r = field.cellsReachableFromThisCell(startX, startY);
+        var r = field.cellsForCorrectMoves(startX, startY);
 
         return  r.contains(field.cellAt(endX, endY));
 

@@ -51,7 +51,7 @@ public class ChessMovesAnalyzer {
             case BISHOP -> bishopMove();
         };
 
-        r.removeIf(cell1 -> !isMoveSaveForTheKing(cell1));
+        r.removeIf(tCell -> !isMoveSaveForTheKing(tCell));
 
         return r;
 
@@ -223,9 +223,9 @@ public class ChessMovesAnalyzer {
         }
 
         var danger = cellsWithDangerToKing();
-        for (var cc : danger)
-            if (ret.contains((Cell) cc))
-                ret.remove(cc);
+
+        ret.removeIf(danger::contains);
+
 
         return ret;
 
@@ -364,7 +364,7 @@ public class ChessMovesAnalyzer {
     }
 
 
-    public ChessMovesAnalyzer checkEnPassantMove() {
+    public ChessMovesAnalyzer passantMove() {
         if (thisY == 5
                 && field.cellAt(thisX, thisY).getFigure().getType() == Figure.Type.PAWN
                 && field.cellAt(thisX, thisY).getFigure().getColor() == Figure.Color.WHITE
@@ -385,7 +385,7 @@ public class ChessMovesAnalyzer {
         return this;
     }
 
-    public ChessMovesAnalyzer checkRoqueMove() {
+    public ChessMovesAnalyzer roqueMove() {
         int yOffset = fColor == Figure.Color.WHITE ? 0 : 7;
 
         if (fType == Figure.Type.KING && thisX == 2
