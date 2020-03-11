@@ -4,6 +4,7 @@ import logic.elements.Cell;
 import logic.elements.Figure;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ChessMovesAnalyzer {
     Field field;
@@ -13,23 +14,30 @@ public class ChessMovesAnalyzer {
     Cell cell;
     int thisX;
     int thisY;
+    Figure figStart;
 
-    private ChessMovesAnalyzer(Field field, Cell c) {
+
+    private ChessMovesAnalyzer(Field field, Cell from) {
 
         this.field = field;
-        this.cell = c;
-        this.thisX = c.getX();
-        this.thisY = c.getY();
-        fColor = c.getFigure().getColor();
-        fType = c.getFigure().getType();
+        this.cell = from;
+        this.thisX = from.getX();
+        this.thisY = from.getY();
+        figStart = from.getFigure();
+        fColor = from.getFigure().getColor();
+        fType = from.getFigure().getType();
+
     }
+
 
     public static ChessMovesAnalyzer get(Field f, Cell c) {
         return new ChessMovesAnalyzer(f, c);
     }
 
     ArrayList<Cell> PossibleCellsForMoves() {
-        return switch (fType) {
+
+
+        var r = switch (fType) {
             case HORSE -> horseMove();
 
             case PAWN -> pawnMove();
@@ -43,6 +51,46 @@ public class ChessMovesAnalyzer {
             case BISHOP -> bishopMove();
         };
 
+        r.removeIf(cell1 -> !isMoveSaveForTheKing(cell1));
+
+        return r;
+
+    }
+
+
+    private ArrayList<Cell> PossibleCellsForSaveMoves() {
+
+
+        var r = switch (fType) {
+            case HORSE -> horseMove();
+
+            case PAWN -> pawnMove();
+
+            case ROOK -> rookMove();
+
+            case KING -> kingMove();
+
+            case QUEEN -> queenMove();
+
+            case BISHOP -> bishopMove();
+        };
+
+
+        return r;
+
+    }
+
+
+    private ArrayList<Cell> cellsWithDangerToKing() {
+        var ret = new HashSet<Cell>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (field.cellAt(j, i).hasFigure() && field.cellAt(j, i).getFigure().getColor() != fColor) {
+                    ret.addAll(ChessMovesAnalyzer.get(field, field.cellAt(j, i)).PossibleCellsForSaveMoves());
+                }
+            }
+        }
+        return new ArrayList<Cell>(ret);
 
     }
 
@@ -143,7 +191,7 @@ public class ChessMovesAnalyzer {
         return attackMoves;
     }
 
-    ArrayList<Cell> kingMove() {
+    private ArrayList<Cell> kingMove() {
         var ret = new ArrayList<Cell>();
 
         var right = cellsToRight();
@@ -165,6 +213,7 @@ public class ChessMovesAnalyzer {
 
             yOffset = 7;
         }
+
         for (int x = thisX - 1; x <= thisX + 1; x++) {
             for (int y = thisY - 1; y <= thisY + 1; y++) {
                 Cell temp = field.cellAt(x, y);
@@ -172,6 +221,12 @@ public class ChessMovesAnalyzer {
                     ret.add(temp);
             }
         }
+
+        var danger = cellsWithDangerToKing();
+        for (var cc : danger)
+            if (ret.contains((Cell) cc))
+                ret.remove(cc);
+
         return ret;
 
     }
@@ -239,10 +294,10 @@ public class ChessMovesAnalyzer {
     private ArrayList<Cell> cellsToTopRight() {
         var ret = new ArrayList<Cell>();
         for (int i = 1; i < 8; i++) {
-            Cell temp = field.cellAt(thisX+i,thisY+i);
-            if(temp != null){
-                if(temp.hasFigure()){
-                    if(temp.getFigure().getColor() != fColor){
+            Cell temp = field.cellAt(thisX + i, thisY + i);
+            if (temp != null) {
+                if (temp.hasFigure()) {
+                    if (temp.getFigure().getColor() != fColor) {
                         ret.add(temp);
                         return ret;
                     }
@@ -257,10 +312,10 @@ public class ChessMovesAnalyzer {
     private ArrayList<Cell> cellsToTopLeft() {
         var ret = new ArrayList<Cell>();
         for (int i = 1; i < 8; i++) {
-            Cell temp = field.cellAt(thisX-i,thisY+i);
-            if(temp != null){
-                if(temp.hasFigure()){
-                    if(temp.getFigure().getColor() != fColor){
+            Cell temp = field.cellAt(thisX - i, thisY + i);
+            if (temp != null) {
+                if (temp.hasFigure()) {
+                    if (temp.getFigure().getColor() != fColor) {
                         ret.add(temp);
                         return ret;
                     }
@@ -275,10 +330,10 @@ public class ChessMovesAnalyzer {
     private ArrayList<Cell> cellsToBotRight() {
         var ret = new ArrayList<Cell>();
         for (int i = 1; i < 8; i++) {
-            Cell temp = field.cellAt(thisX+i,thisY-i);
-            if(temp != null){
-                if(temp.hasFigure()){
-                    if(temp.getFigure().getColor() != fColor){
+            Cell temp = field.cellAt(thisX + i, thisY - i);
+            if (temp != null) {
+                if (temp.hasFigure()) {
+                    if (temp.getFigure().getColor() != fColor) {
                         ret.add(temp);
                         return ret;
                     }
@@ -293,10 +348,10 @@ public class ChessMovesAnalyzer {
     private ArrayList<Cell> cellsToBotLeft() {
         var ret = new ArrayList<Cell>();
         for (int i = 1; i < 8; i++) {
-            Cell temp = field.cellAt(thisX-i,thisY-i);
-            if(temp != null){
-                if(temp.hasFigure()){
-                    if(temp.getFigure().getColor() != fColor){
+            Cell temp = field.cellAt(thisX - i, thisY - i);
+            if (temp != null) {
+                if (temp.hasFigure()) {
+                    if (temp.getFigure().getColor() != fColor) {
                         ret.add(temp);
                         return ret;
                     }
@@ -340,5 +395,38 @@ public class ChessMovesAnalyzer {
                 && cell.getFigure().getMovesCount() == 1)
             field.moveFigure(7, yOffset, 5, yOffset);
         return this;
+    }
+
+    public boolean isMoveSaveForTheKing(Cell end) {
+        Figure tempDeletedFig = null;
+        if (end.hasFigure()) {
+            tempDeletedFig = end.removeFigure();
+        }
+        end.addFigure(cell.removeFigure());
+
+        Cell King = detectKing();
+
+        if (cellsWithDangerToKing().contains(King)) {
+            cell.addFigure(end.removeFigure());
+            end.addFigure(tempDeletedFig);
+            return false;
+        }
+
+        cell.addFigure(end.removeFigure());
+        end.addFigure(tempDeletedFig);
+        return true;
+    }
+
+    Cell detectKing() {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (field.cellAt(j, i).hasFigure() &&
+                        field.cellAt(j, i).getFigure().getType() == Figure.Type.KING
+                        && field.cellAt(j, i).getFigure().getColor() == fColor) {
+                    return field.cellAt(j, i);
+                }
+            }
+        }
+        return null;
     }
 }

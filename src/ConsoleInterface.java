@@ -13,9 +13,11 @@ public class ConsoleInterface {
 
         Scanner in = new Scanner(System.in);
         while (true) {
-            System.out.println("Hello!\n" +
-                    "Type \"quit\" to exit the game\n" +
-                    "\"start\" to start a new game");
+            System.out.println("""
+                    Hello!
+                    Type "quit" to exit the game
+                    "start" to start a new game
+                    """);
             var s = in.nextLine();
             switch (s) {
                 case "quit":

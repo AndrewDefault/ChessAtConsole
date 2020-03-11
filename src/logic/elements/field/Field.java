@@ -47,13 +47,19 @@ public class Field {
 //        }
 
 
-        cellAt(3,3).addFigure(new Figure(Figure.Color.WHITE, Figure.Type.BISHOP));
-        cellAt(5,1).addFigure(new Figure(Figure.Color.BLACK, Figure.Type.PAWN));
-        var a = cellsReachableFromThisCell(3, 3);
+        cellAt(4, 0).addFigure(new Figure(Figure.Color.WHITE, Figure.Type.KING));
+        cellAt(4, 7).addFigure(new Figure(Figure.Color.BLACK, Figure.Type.ROOK));
+        cellAt(0,3).addFigure(new Figure(Figure.Color.WHITE, Figure.Type.QUEEN));
 
-        for (var s : a) {
-            s.addFigure(new Figure(Figure.Color.BLACK, Figure.Type.KING));
-        }
+
+        var a = cellsReachableFromThisCell(0, 3);
+
+
+
+            for (var s : a) {
+                s.addFigure(new Figure(Figure.Color.BLACK, Figure.Type.KING));
+            }
+
 
         whiteFigures = new ArrayList<>();
         blackFigures = new ArrayList<>();
@@ -80,6 +86,7 @@ public class Field {
     public ArrayList<Cell> cellsReachableFromThisCell(int startX, int startY) {
 
         return ChessMovesAnalyzer.get(this, cellAt(startX, startY)).PossibleCellsForMoves();
+
     }
 
 
@@ -87,11 +94,13 @@ public class Field {
         Cell start = cells[startY][startX];
         Cell end = cells[endY][endX];
 
+
         end.addFigure(start.getFigure());
         start.removeFigure();
         end.getFigure().movePerformed(currentTurnCount++);
 
-        ChessMovesAnalyzer.get(this,end).checkEnPassantMove().checkRoqueMove();
+
+        ChessMovesAnalyzer.get(this, end).checkEnPassantMove().checkRoqueMove();
     }
 
 

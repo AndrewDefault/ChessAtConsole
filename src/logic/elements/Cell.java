@@ -25,12 +25,10 @@ public class Cell {
         return figureAtCell;
     }
 
-    public boolean removeFigure() {
-        if (figureAtCell != null) {
-            figureAtCell = null;
-            return true;
-        }
-        return false;
+    public Figure removeFigure() {
+        var ret = figureAtCell;
+        figureAtCell = null;
+        return ret;
     }
 
     public Figure addFigure(Figure fig) {
@@ -43,7 +41,8 @@ public class Cell {
     public int getX() {
         return x;
     }
-    public int getY(){
+
+    public int getY() {
         return y;
     }
 }
