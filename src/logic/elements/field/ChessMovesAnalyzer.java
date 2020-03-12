@@ -6,7 +6,9 @@ import logic.elements.Figure;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-
+/**
+ * Provides class that analyze field and cell to calculate right moves.
+ */
 public class ChessMovesAnalyzer {
     Field field;
     Figure.Type fType;
@@ -49,15 +51,10 @@ public class ChessMovesAnalyzer {
     ArrayList<Cell> PossibleCellsForMoves() {
         var returningCells = switch (fType) {
             case HORSE -> horseMove();
-
             case PAWN -> pawnMove();
-
             case ROOK -> rookMove();
-
             case KING -> kingMove();
-
             case QUEEN -> queenMove();
-
             case BISHOP -> bishopMove();
         };
         returningCells.removeIf(tCell -> !isMoveSafeForTheKing(tCell));

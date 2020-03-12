@@ -5,6 +5,9 @@ import logic.elements.Figure;
 
 import java.util.ArrayList;
 
+/**
+ * Class with field for chess game.
+ */
 public class Field {
 
     Cell[][] cells;
@@ -21,10 +24,16 @@ public class Field {
         setupFigures();
     }
 
+    /**
+     * @return how many moves were already made
+     */
     public int getCurrentTurnCount() {
         return currentTurnCount;
     }
 
+    /**
+     * setup chess field according to rules
+     */
     private void setupFigures() {
         for (int x = 0; x < 8; x++) {
             cells[1][x].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.PAWN));
@@ -41,26 +50,15 @@ public class Field {
             cells[i][5].addFigure(new Figure(c, Figure.Type.BISHOP));
             cells[i][6].addFigure(new Figure(c, Figure.Type.HORSE));
             cells[i][7].addFigure(new Figure(c, Figure.Type.ROOK));
-            c = Figure.Color.BLACK;
+            c = c.getOposeColor();
         }
-
-//
-//        cellAt(4, 0).addFigure(new Figure(Figure.Color.WHITE, Figure.Type.KING));
-//        cellAt(4, 7).addFigure(new Figure(Figure.Color.BLACK, Figure.Type.ROOK));
-//        cellAt(0, 3).addFigure(new Figure(Figure.Color.WHITE, Figure.Type.QUEEN));
-
-
-//        var a = cellsForCorrectMoves(0, 3);
-//
-//
-//        for (var s : a) {
-//            s.addFigure(new Figure(Figure.Color.BLACK, Figure.Type.KING));
-//        }
-
-
     }
 
-
+    /**
+     * @param x from 0 to 7
+     * @param y from 0 to 7
+     * @return cell at given coordinates or null if coordinates are out of range
+     */
     public Cell cellAt(int x, int y) {
         if (x < 0 || x > 7 || y < 0 || y > 7)
             return null;
@@ -68,12 +66,20 @@ public class Field {
         return cells[y][x];
     }
 
+    /**
+     *Coordinates must refer to cell with figure!
+     * @return cells which are reachable from current position
+     */
     public ArrayList<Cell> cellsForCorrectMoves(int startX, int startY) {
-
         return ChessMovesAnalyzer.get(this, cellAt(startX, startY)).PossibleCellsForMoves();
     }
+    // TODO: 12.03.2020 pawn at end of board
 
-
+    /**
+     * Move figure from start to end and make special moves (en passent and roque)
+     * start cell must contain figure. Target cell must be reachable from start cell.
+     * @return true if after move there is a checkmate
+     */
     public boolean moveFigure(int startX, int startY, int endX, int endY) {
         Cell start = cells[startY][startX];
         Cell end = cells[endY][endX];
@@ -86,7 +92,9 @@ public class Field {
         return analyzer.isCheckmate();
     }
 
-
+    /**
+     * @return text view of chess board
+     */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder("  ┌────┬────┬────┬────┬────┬────┬────┬────┐\n");

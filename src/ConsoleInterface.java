@@ -3,6 +3,9 @@ import logic.Game;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+/**
+ * Class with simple console interface for playing chess game.
+ */
 public class ConsoleInterface {
 
     private Game game;
@@ -10,7 +13,6 @@ public class ConsoleInterface {
     public static void main(String[] args) {
 
         new ConsoleInterface().startNewGame(); //tem line
-
 
         Scanner in = new Scanner(System.in);
         while (true) {
@@ -30,19 +32,13 @@ public class ConsoleInterface {
         }
     }
 
+    /**
+     * Creates new copy of a game and starts to play
+     */
     void startNewGame() {
         game = new Game();
 
         Scanner in = new Scanner(System.in);
-
-
-        testMove("e2 e4");
-        testMove("e7 e5");
-        testMove("f1 c4");
-        testMove("b8 c6");
-        testMove("d1 h5");
-        testMove("g8 f6");
-
 
         while (game.isRunning()) {
             System.out.println(game.getField());
@@ -51,14 +47,14 @@ public class ConsoleInterface {
             String turn = in.nextLine();
 
             if (Pattern.matches("([a-hA-H][1-8]\\s+[a-hA-H][1-8])|quit", turn)) {
-                if(turn.equals("quit")) {
+                if (turn.equals("quit")) {
                     congratsTheWinner();
                     return;
                 }
 
                 int[] args = transferCoordinates(turn);
 
-                if ( game.cellContainsCorrectFigureForMove(args[0], args[1]).isEmpty()) {
+                if (game.cellContainsCorrectFigureForMove(args[0], args[1]).isEmpty()) {
                     System.out.println("Wrong figure for this turn!");
                     continue;
                 }
@@ -66,46 +62,36 @@ public class ConsoleInterface {
                     System.out.println("Wrong target!");
                     continue;
                 }
-                boolean check = game.performMove(args[0], args[1], args[2], args[3]);
-                if (check)
-                    break;
+                game.performMove(args[0], args[1], args[2], args[3]);
             }
         }
         congratsTheWinner();
     }
 
-    int[] transferCoordinates(String s) {
-        int[] ret = new int[4];
-        String[] parsed = s.toLowerCase().split("\\s+");
-        ret[0] = parsed[0].charAt(0) - 'a';
-        ret[1] = parsed[0].charAt(1) - '1';
-
-        ret[2] = parsed[1].charAt(0) - 'a';
-        ret[3] = parsed[1].charAt(1) - '1';
-
-        return ret;
+    /**
+     * Transfer input coordinates in chess "format" into digital
+     *
+     * @param stringCoords coordinates in chess "format"
+     * @return array with integers - digital coordinates
+     */
+    int[] transferCoordinates(String stringCoords) {
+        String[] parsed = stringCoords.toLowerCase().split("\\s+");
+        return new int[]{
+                parsed[0].charAt(0) - 'a',
+                parsed[0].charAt(1) - '1',
+                parsed[1].charAt(0) - 'a',
+                parsed[1].charAt(1) - '1'
+        };
     }
 
-
-    void testMove(String s) {
-        int[] args = transferCoordinates(s);
-        game.performMove(args[0], args[1], args[2], args[3]);
-    }
-
-    void testGame(String S) {
-        String[] str = S.trim().split("\\s+");
-        for (var k : str)
-            testMove(k);
-    }
-
+    /**
+     * Method to show winner
+     */
     void congratsTheWinner() {
-
-        System.out.println(game.whoMovesNow().getOposeColor() + """
+        System.out.println(game.whoIsWinner() + """
                  is a winner!
                 Congrats!
 
                 """);
     }
-
-
 }

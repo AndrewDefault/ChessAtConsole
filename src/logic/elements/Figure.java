@@ -1,5 +1,8 @@
 package logic.elements;
 
+/**
+ * Provides class for different chess figures
+ */
 public class Figure {
     private Color color;
     private Type type;
@@ -29,11 +32,18 @@ public class Figure {
         return color;
     }
 
-    public void movePerformed(int k) {
-        lastTurn = k;
+    /**
+     * increases number of moves and set id of last turn with this figure
+     * @param idOfLastTurn id of last turn
+     */
+    public void movePerformed(int idOfLastTurn) {
+        lastTurn = idOfLastTurn;
         movesCount++;
     }
 
+    /**
+     * @return text view of figure (with type and color)
+     */
     @Override
     public String toString() {
         String sColor = switch (color) {
@@ -52,10 +62,20 @@ public class Figure {
         return sColor.concat(sType);
     }
 
+    /**
+     * Enum for figure color
+     */
     public enum Color {BLACK, WHITE;
+
+        /**
+         * @return opposite color
+         */
     public Color getOposeColor(){
         return this == BLACK ? WHITE : BLACK;
     }}
 
+    /**
+     * Enum for different figure types
+     */
     public enum Type {KING, QUEEN, ROOK, HORSE, BISHOP, PAWN}
 }
