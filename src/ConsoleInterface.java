@@ -1,4 +1,4 @@
-import logic.Game;
+import logic.ChessGame;
 
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  */
 public class ConsoleInterface {
 
-    private Game game;
+    private ChessGame game;
 
     public static void main(String[] args) {
 
@@ -36,33 +36,36 @@ public class ConsoleInterface {
      * Creates new copy of a game and starts to play
      */
     void startNewGame() {
-        game = new Game();
+        game = new ChessGame();
 
         Scanner in = new Scanner(System.in);
-
+        System.out.println(game.getField());
         while (game.isRunning()) {
-            System.out.println(game.getField());
             System.out.print(game.whoMovesNow().toString().toLowerCase() + "'s turn: ");
 
             String turn = in.nextLine();
 
             if (Pattern.matches("([a-hA-H][1-8]\\s+[a-hA-H][1-8])|quit", turn)) {
                 if (turn.equals("quit")) {
-                    congratsTheWinner();
+                    System.out.println("\nGame ended!\n");
                     return;
                 }
 
                 int[] args = transferCoordinates(turn);
 
                 if (game.cellContainsCorrectFigureForMove(args[0], args[1]).isEmpty()) {
+                    System.out.println(game.getField());
                     System.out.println("Wrong figure for this turn!");
                     continue;
                 }
                 if (!game.cellIsSuitableForMove(args[0], args[1], args[2], args[3])) {
+                    System.out.println(game.getField());
                     System.out.println("Wrong target!");
                     continue;
                 }
                 game.performMove(args[0], args[1], args[2], args[3]);
+
+                System.out.println(game.getField());
             }
         }
         congratsTheWinner();

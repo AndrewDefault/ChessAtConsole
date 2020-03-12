@@ -1,15 +1,16 @@
-package logic.elements.field;
+package logic.game;
 
 import logic.elements.Cell;
+import logic.elements.Field;
 import logic.elements.Figure;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-
+// TODO: 13.03.2020 class shouldn't change objects, that are sent to it
 /**
  * Provides class that analyze field and cell to calculate right moves.
  */
-public class ChessMovesAnalyzer {
+public class ChessRules {
     Field field;
     Figure.Type fType;
 
@@ -25,7 +26,7 @@ public class ChessMovesAnalyzer {
      * @param field field for analysis
      * @param from  cell from which analysis is started (mandatory: from.hasFigure() == true)
      */
-    private ChessMovesAnalyzer(Field field, Cell from) {
+    private ChessRules(Field field, Cell from) {
 
         this.field = field;
         this.cell = from;
@@ -44,11 +45,11 @@ public class ChessMovesAnalyzer {
      * @param startCell cell from which analysis is started (mandatory: from.hasFigure() == true)
      * @return new copy of ChessMovesAnalyzer
      */
-    public static ChessMovesAnalyzer get(Field field, Cell startCell) {
-        return new ChessMovesAnalyzer(field, startCell);
+    public static ChessRules get(Field field, Cell startCell) {
+        return new ChessRules(field, startCell);
     }
 
-    ArrayList<Cell> PossibleCellsForMoves() {
+    public ArrayList<Cell> PossibleCellsForMoves() {
         var returningCells = switch (fType) {
             case HORSE -> horseMove();
             case PAWN -> pawnMove();
@@ -80,7 +81,7 @@ public class ChessMovesAnalyzer {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (field.cellAt(j, i).hasFigure() && field.cellAt(j, i).getFigure().getColor() != fColor) {
-                    ret.addAll(ChessMovesAnalyzer.get(field, field.cellAt(j, i)).PossibleCellsForSaveMoves());
+                    ret.addAll(ChessRules.get(field, field.cellAt(j, i)).PossibleCellsForSaveMoves());
                 }
             }
         }
@@ -362,7 +363,7 @@ public class ChessMovesAnalyzer {
         roqueMove();
     }
 
-    public void passantMove() {
+    private void passantMove() {
         if (thisY == 5
                 && field.cellAt(thisX, thisY).getFigure().getType() == Figure.Type.PAWN
                 && field.cellAt(thisX, thisY).getFigure().getColor() == Figure.Color.WHITE
@@ -382,7 +383,7 @@ public class ChessMovesAnalyzer {
         }
     }
 
-    public void roqueMove() {
+    private void roqueMove() {
         int yOffset = fColor == Figure.Color.WHITE ? 0 : 7;
 
         if (fType == Figure.Type.KING && thisX == 2
@@ -441,7 +442,7 @@ public class ChessMovesAnalyzer {
                 for (int j = 0; j < 8; j++)
                     if (field.cellAt(j, i).hasFigure()
                             && field.cellAt(j, i).getFigure().getColor() == fColor)
-                        cellsThatSaveTheKing.addAll(new ChessMovesAnalyzer(field, field.cellAt(j, i)).PossibleCellsForMoves());
+                        cellsThatSaveTheKing.addAll(new ChessRules(field, field.cellAt(j, i)).PossibleCellsForMoves());
 
             return cellsThatSaveTheKing.isEmpty();
         }

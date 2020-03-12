@@ -2,14 +2,14 @@ package logic;
 
 import logic.elements.Cell;
 import logic.elements.Figure;
-import logic.elements.field.Field;
+import logic.elements.Field;
 
 import java.util.ArrayList;
 
 /**
  * Class that provides interface for chess game.
  */
-public class Game {
+public class ChessGame {
     Figure.Color winnerOfGame;
     private boolean isGameRunning;
     private Figure.Color whoMoves;
@@ -18,7 +18,7 @@ public class Game {
     /**
      * Constructs new game and field
      */
-    public Game() {
+    public ChessGame() {
         isGameRunning = true;
         whoMoves = Figure.Color.WHITE;
         winnerOfGame = Figure.Color.WHITE;

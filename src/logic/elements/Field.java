@@ -1,7 +1,6 @@
-package logic.elements.field;
+package logic.elements;
 
-import logic.elements.Cell;
-import logic.elements.Figure;
+import logic.game.ChessRules;
 
 import java.util.ArrayList;
 
@@ -71,9 +70,10 @@ public class Field {
      * @return cells which are reachable from current position
      */
     public ArrayList<Cell> cellsForCorrectMoves(int startX, int startY) {
-        return ChessMovesAnalyzer.get(this, cellAt(startX, startY)).PossibleCellsForMoves();
+        return ChessRules.get(this, cellAt(startX, startY)).PossibleCellsForMoves();
     }
     // TODO: 12.03.2020 pawn at end of board
+    // TODO: 12.03.2020 logging all moves
 
     /**
      * Move figure from start to end and make special moves (en passent and roque)
@@ -87,7 +87,7 @@ public class Field {
         end.addFigure(start.removeFigure());
         end.getFigure().movePerformed(currentTurnCount++);
 
-        var analyzer = ChessMovesAnalyzer.get(this, end);
+        var analyzer = ChessRules.get(this, end);
         analyzer.performSpecialMoves();
         return analyzer.isCheckmate();
     }
