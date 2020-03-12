@@ -19,8 +19,9 @@ public class ChessMovesAnalyzer {
 
     /**
      * Private constructor. Creates new copy of analyzer.
+     *
      * @param field field for analysis
-     * @param from cell from which analysis is started (mandatory: from.hasFigure() == true)
+     * @param from  cell from which analysis is started (mandatory: from.hasFigure() == true)
      */
     private ChessMovesAnalyzer(Field field, Cell from) {
 
@@ -36,7 +37,8 @@ public class ChessMovesAnalyzer {
 
     /**
      * Static method for creating a new copy of analyzer with specified parameters
-     * @param field field for analysis
+     *
+     * @param field     field for analysis
      * @param startCell cell from which analysis is started (mandatory: from.hasFigure() == true)
      * @return new copy of ChessMovesAnalyzer
      */
@@ -219,7 +221,7 @@ public class ChessMovesAnalyzer {
 
         //var danger = cellsWithDangerToKing();
 
-       // ret.removeIf(danger::contains);
+        // ret.removeIf(danger::contains);
 
 
         return ret;
@@ -358,8 +360,12 @@ public class ChessMovesAnalyzer {
         return ret;
     }
 
+    public void performSpecialMoves() {
+        passantMove();
+        roqueMove();
+    }
 
-    public ChessMovesAnalyzer passantMove() {
+    public void passantMove() {
         if (thisY == 5
                 && field.cellAt(thisX, thisY).getFigure().getType() == Figure.Type.PAWN
                 && field.cellAt(thisX, thisY).getFigure().getColor() == Figure.Color.WHITE
@@ -377,10 +383,9 @@ public class ChessMovesAnalyzer {
                 && field.cellAt(thisX, thisY + 1).getFigure().getLastTurn() == field.cellAt(thisX, thisY).getFigure().getLastTurn() - 1) {
             field.cellAt(thisX, thisY + 1).removeFigure();
         }
-        return this;
     }
 
-    public ChessMovesAnalyzer roqueMove() {
+    public void roqueMove() {
         int yOffset = fColor == Figure.Color.WHITE ? 0 : 7;
 
         if (fType == Figure.Type.KING && thisX == 2
@@ -389,13 +394,10 @@ public class ChessMovesAnalyzer {
         if (fType == Figure.Type.KING && thisX == 6
                 && cell.getFigure().getMovesCount() == 1)
             field.moveFigure(7, yOffset, 5, yOffset);
-        return this;
     }
 
     /**
-     *
-     * @param end
-     * @return
+     * @param end f
      */
     public boolean isMoveSafeForTheKing(Cell end) {
         Figure tempDeletedFig = null;
@@ -418,44 +420,33 @@ public class ChessMovesAnalyzer {
     }
 
     Cell detectKing() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++)
                 if (field.cellAt(j, i).hasFigure() &&
                         field.cellAt(j, i).getFigure().getType() == Figure.Type.KING
-                        && field.cellAt(j, i).getFigure().getColor() == fColor) {
+                        && field.cellAt(j, i).getFigure().getColor() == fColor)
                     return field.cellAt(j, i);
-                }
-            }
-        }
+
         return null;
     }
 
     public boolean isCheckmate() {
-
-
-
         fColor = fColor.getOposeColor();
 
         var cellsWithDanger = cellsWithDangerToKing();
-
         Cell King = detectKing();
 
         var cellsThatSaveTheKing = new HashSet<Cell>();
 
-        if(cellsWithDanger.contains(King))
-        {
+        if (cellsWithDanger.contains(King)) {
             System.out.println("King is under danger!!!");
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
                     if (field.cellAt(j, i).hasFigure()
-                            && field.cellAt(j, i).getFigure().getColor() == fColor) {
-                        cellsThatSaveTheKing.addAll(new ChessMovesAnalyzer(field,field.cellAt(j,i)).PossibleCellsForMoves());
-                       // System.out.println(field.cellAt(j,i).getFigure() +" at " + j + " " + i +"||"+ cellsThatSaveTheKing.size());;
-                    }
-                }
-            }
-            if(cellsThatSaveTheKing.isEmpty())
-                return true;
+                            && field.cellAt(j, i).getFigure().getColor() == fColor)
+                        cellsThatSaveTheKing.addAll(new ChessMovesAnalyzer(field, field.cellAt(j, i)).PossibleCellsForMoves());
+
+            return cellsThatSaveTheKing.isEmpty();
         }
 
         return false;

@@ -17,8 +17,6 @@ public class Game {
         isGameRunning = true;
         whoMoves = Figure.Color.WHITE;
         field = new Field();
-
-        System.out.println(field);
     }
 
     public Figure.Color whoMovesNow() {
@@ -29,14 +27,18 @@ public class Game {
         return isGameRunning;
     }
 
-    public void performMove(int startX, int startY, int lastX, int lastY) {
-        field.moveFigure(startX, startY, lastX, lastY);
+    public Field getField() {
+        return field;
+    }
+
+    public boolean performMove(int startX, int startY, int lastX, int lastY) {
+        boolean isMate = field.moveFigure(startX, startY, lastX, lastY);
 
         whoMoves = whoMoves == Figure.Color.WHITE
                 ? Figure.Color.BLACK
                 : Figure.Color.WHITE;
 
-        System.out.println(field);
+        return isMate;
     }
 
 

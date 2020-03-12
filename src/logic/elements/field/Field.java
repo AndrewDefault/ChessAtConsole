@@ -27,7 +27,7 @@ public class Field {
 
     private void setupFigures() {
         for (int x = 0; x < 8; x++) {
-             cells[1][x].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.PAWN));
+            cells[1][x].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.PAWN));
             cells[6][x].addFigure(new Figure(Figure.Color.BLACK, Figure.Type.PAWN));
         }
 
@@ -74,18 +74,16 @@ public class Field {
     }
 
 
-    public void moveFigure(int startX, int startY, int endX, int endY) {
+    public boolean moveFigure(int startX, int startY, int endX, int endY) {
         Cell start = cells[startY][startX];
         Cell end = cells[endY][endX];
 
         end.addFigure(start.removeFigure());
         end.getFigure().movePerformed(currentTurnCount++);
 
-
-        boolean check =ChessMovesAnalyzer.get(this, end).passantMove().roqueMove().isCheckmate();
-
-        if (check) System.out.println("It's checkmate!");;
-
+        var analyzer = ChessMovesAnalyzer.get(this, end);
+        analyzer.performSpecialMoves();
+        return analyzer.isCheckmate();
     }
 
 
