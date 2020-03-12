@@ -1,5 +1,6 @@
 package logic.elements;
 
+// TODO: 11.03.2020 Asserts are needed!
 public class Cell {
 
     Figure figureAtCell;
@@ -10,11 +11,6 @@ public class Cell {
         this.x = x;
         this.y = y;
         figureAtCell = null;
-    }
-
-    public Cell(int x, int y, Figure f) {
-        this(x, y);
-        figureAtCell = f;
     }
 
     public boolean hasFigure() {
@@ -44,5 +40,21 @@ public class Cell {
 
     public int getY() {
         return y;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder("");
+
+        String filler = (x + y) % 2 == 0 ? "■" : " ";
+        str.append(filler);
+
+        if (!hasFigure())
+            str.append(filler + filler);
+        else
+            str.append(figureAtCell);
+
+        str.append(filler);
+        return str.toString();
     }
 }

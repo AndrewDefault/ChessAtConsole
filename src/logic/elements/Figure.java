@@ -4,7 +4,7 @@ public class Figure {
     private Color color;
     private Type type;
     private int movesCount;
-    private  int lastTurn;
+    private int lastTurn;
 
     public Figure(Color color, Type type) {
         this.color = color;
@@ -34,9 +34,28 @@ public class Figure {
         movesCount++;
     }
 
-    public enum Color {BLACK, WHITE}
+    @Override
+    public String toString() {
+        String sColor = switch (color) {
+            case WHITE -> "W";
+            case BLACK -> "B";
+        };
+
+        String sType = switch (type) {
+            case KING -> "K";
+            case ROOK -> "R";
+            case PAWN -> "P";
+            case HORSE -> "H";
+            case QUEEN -> "Q";
+            case BISHOP -> "B";
+        };
+        return sColor.concat(sType);
+    }
+
+    public enum Color {BLACK, WHITE;
+    public Color getOposeColor(){
+        return this == BLACK ? WHITE : BLACK;
+    }}
 
     public enum Type {KING, QUEEN, ROOK, HORSE, BISHOP, PAWN}
-
-
 }

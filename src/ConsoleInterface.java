@@ -1,6 +1,7 @@
 import logic.Game;
 
 import java.util.Scanner;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class ConsoleInterface {
@@ -10,6 +11,7 @@ public class ConsoleInterface {
     public static void main(String[] args) {
 
         new ConsoleInterface().startNewGame(); //tem line
+
 
         Scanner in = new Scanner(System.in);
         while (true) {
@@ -33,6 +35,10 @@ public class ConsoleInterface {
         game = new Game();
 
         Scanner in = new Scanner(System.in);
+
+        testMove("g2 g4");
+        testMove("e7 e6");
+        testMove("f2 f4");
 
         while (game.isRunning()) {
             System.out.print(game.whoMovesNow().toString().toLowerCase() + "'s turn: ");
@@ -68,6 +74,11 @@ public class ConsoleInterface {
         return ret;
     }
 
+
+    void testMove(String s){
+        int[] args = transferCoodrd(s);
+        game.performMove(args[0], args[1], args[2], args[3]);
+    }
 
     void congratsTheWinner() {
 
