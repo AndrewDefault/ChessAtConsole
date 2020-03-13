@@ -13,43 +13,43 @@ import java.util.HashSet;
  */
 public class ChessRules {
     Field field;
-    Figure.Type fType;
 
-    Figure.Color fColor;
+    Figure.Type fType;
+    Figure.Color figureColor;
+
     Cell cell;
     int thisX;
     int thisY;
-    Figure figStart;
 
     /**
      * Private constructor. Creates new copy of analyzer.
      *
      * @param field field for analysis
-     * @param from  cell from which analysis is started (mandatory: from.hasFigure() == true)
+     * @param cellForAnalysis  cell from which analysis is started (mandatory: cell must contain Figure)
      */
-    private ChessRules(Field field, Cell from) {
-
+    private ChessRules(Field field, Cell cellForAnalysis) {
         this.field = field;
-        this.cell = from;
-        this.thisX = from.getX();
-        this.thisY = from.getY();
-        figStart = from.getFigure();
-        fColor = from.getFigure().getColor();
-        fType = from.getFigure().getType();
-
+        this.cell = cellForAnalysis;
+        this.thisX = cellForAnalysis.getX();
+        this.thisY = cellForAnalysis.getY();
+        figureColor = cellForAnalysis.getFigure().getColor();
+        fType = cellForAnalysis.getFigure().getType();
     }
 
     /**
      * Static method for creating a new copy of analyzer with specified parameters
      *
      * @param field     field for analysis
-     * @param startCell cell from which analysis is started (mandatory: from.hasFigure() == true)
+     * @param cellForAnalysis cell from which analysis is started (mandatory: cell must contain Figure)
      * @return new copy of ChessMovesAnalyzer
      */
-    public static ChessRules get(Field field, Cell startCell) {
-        return new ChessRules(field, startCell);
+    public static ChessRules analysis(Field field, Cell cellForAnalysis) {
+        return new ChessRules(field, cellForAnalysis);
     }
 
+    /**
+     * Method for creating list of cells that are right for move from current cell.
+     */
     public ArrayList<Cell> PossibleCellsForMoves() {
         var returningCells = switch (fType) {
             case HORSE -> horseMove();
@@ -61,7 +61,6 @@ public class ChessRules {
         };
         returningCells.removeIf(tCell -> !isMoveSafeForTheKing(tCell));
         return returningCells;
-
     }
 
 
@@ -76,13 +75,16 @@ public class ChessRules {
         };
     }
 
-
+    /**
+     * Returns list of cells which are dangerous to king of figureColor
+     * @return
+     */
     private ArrayList<Cell> cellsWithDangerToKing() {
         var ret = new HashSet<Cell>();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (field.cellAt(j, i).hasFigure() && field.cellAt(j, i).getFigure().getColor() != fColor) {
-                    ret.addAll(ChessRules.get(field, field.cellAt(j, i)).PossibleCellsForSaveMoves());
+                if (field.cellAt(j, i).hasFigure() && field.cellAt(j, i).getFigure().getColor() != figureColor) {
+                    ret.addAll(ChessRules.analysis(field, field.cellAt(j, i)).PossibleCellsForSaveMoves());
                 }
             }
         }
@@ -92,23 +94,23 @@ public class ChessRules {
 
     private ArrayList<Cell> bishopMove() {
         return new ArrayList<>() {{
-            addAll(cellsToBotLeft());
-            addAll(cellsToTopLeft());
-            addAll(cellsToBotRight());
-            addAll(cellsToTopRight());
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.TOP));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.TOP));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.BOT));
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.BOT));
         }};
     }
 
     private ArrayList<Cell> queenMove() {
         return new ArrayList<>() {{
-            addAll(cellsToBotLeft());
-            addAll(cellsToTopLeft());
-            addAll(cellsToBotRight());
-            addAll(cellsToTopRight());
-            addAll(cellsToBot());
-            addAll(cellsToTop());
-            addAll(cellsToLeft());
-            addAll(cellsToRight());
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.NO_DIRECTION));
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.TOP));
+            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.TOP));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.TOP));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.NO_DIRECTION));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.BOT));
+            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.BOT));
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.BOT));
         }};
     }
 
@@ -118,14 +120,14 @@ public class ChessRules {
         for (int x = thisX - 1; x <= thisX + 1; x += 2) {
             for (int y = thisY - 2; y <= thisY + 2; y += 4) {
                 Cell temp = field.cellAt(x, y);
-                if (temp != null && (!temp.hasFigure() || temp.getFigure().getColor() != fColor))
+                if (temp != null && (!temp.hasFigure() || temp.getFigure().getColor() != figureColor))
                     ret.add(temp);
             }
         }
         for (int x = thisX - 2; x <= thisX + 2; x += 4) {
             for (int y = thisY - 1; y <= thisY + 1; y += 2) {
                 Cell temp = field.cellAt(x, y);
-                if (temp != null && (!temp.hasFigure() || temp.getFigure().getColor() != fColor))
+                if (temp != null && (!temp.hasFigure() || temp.getFigure().getColor() != figureColor))
                     ret.add(temp);
             }
         }
@@ -136,10 +138,10 @@ public class ChessRules {
 
     private ArrayList<Cell> rookMove() {
         return new ArrayList<>() {{
-            addAll(cellsToBot());
-            addAll(cellsToTop());
-            addAll(cellsToLeft());
-            addAll(cellsToRight());
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.NO_DIRECTION));
+            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.TOP));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.NO_DIRECTION));
+            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.BOT));
         }};
     }
 
@@ -147,10 +149,10 @@ public class ChessRules {
         var attackMoves = new ArrayList<Cell>();
         int xOffset = -1;
 
-        int yOffset = fColor == Figure.Color.WHITE ? 1 : -1;
-        int enPassant = fColor == Figure.Color.WHITE ? 4 : 3;
+        int yOffset = figureColor == Figure.Color.WHITE ? 1 : -1;
+        int enPassant = figureColor == Figure.Color.WHITE ? 4 : 3;
 
-        Figure.Color opColor = fColor.getOppositeColor();
+        Figure.Color opColor = figureColor.getOppositeColor();
 
         for (int i = 0; i < 2; i++) {
             Cell c = field.cellAt(thisX + xOffset, thisY + yOffset);
@@ -172,7 +174,8 @@ public class ChessRules {
             xOffset = 1;
         }
 
-        var classicMoves = fColor == Figure.Color.WHITE ? cellsToTop() : cellsToBot();
+        var classicMoves = cellsToDirection(Horizontal.NO_DIRECTION,
+                figureColor == Figure.Color.WHITE ? Vertical.TOP : Vertical.BOT);
 
         if (!classicMoves.isEmpty() && classicMoves.get(classicMoves.size() - 1).hasFigure())
             classicMoves.remove(classicMoves.size() - 1);
@@ -190,8 +193,8 @@ public class ChessRules {
     private ArrayList<Cell> kingMove() {
         var ret = new ArrayList<Cell>();
 
-        var right = cellsToRight();
-        var left = cellsToLeft();
+        var right = cellsToDirection(Horizontal.RIGHT, Vertical.NO_DIRECTION);
+        var left = cellsToDirection(Horizontal.LEFT, Vertical.NO_DIRECTION);
 
         int yOffset = 0;
         for (int i = 0; i < 2; i++) {
@@ -213,156 +216,22 @@ public class ChessRules {
         for (int x = thisX - 1; x <= thisX + 1; x++) {
             for (int y = thisY - 1; y <= thisY + 1; y++) {
                 Cell temp = field.cellAt(x, y);
-                if (temp != null && (!temp.hasFigure() || temp.getFigure().getColor() != fColor))
+                if (temp != null && (!temp.hasFigure() || temp.getFigure().getColor() != figureColor))
                     ret.add(temp);
             }
         }
 
-        //var danger = cellsWithDangerToKing();
-
-        // ret.removeIf(danger::contains);
-
 
         return ret;
 
     }
 
-    private ArrayList<Cell> cellsToRight() {
-        var ret = new ArrayList<Cell>();
-        for (int x = thisX + 1; x < 8; x++) {
-            if (field.cellAt(x, thisY).hasFigure()) {
-                if (field.cellAt(x, thisY).getFigure().getColor() != fColor) {
-                    ret.add(field.cellAt(x, thisY));
-                    return ret;
-                }
-                return ret;
-            }
-            ret.add(field.cellAt(x, thisY));
-        }
-        return ret;
-    }
-
-    private ArrayList<Cell> cellsToLeft() {
-        var ret = new ArrayList<Cell>();
-        for (int x = thisX - 1; x >= 0; x--) {
-            if (field.cellAt(x, thisY).hasFigure()) {
-                if (field.cellAt(x, thisY).getFigure().getColor() != fColor) {
-                    ret.add(field.cellAt(x, thisY));
-                    return ret;
-                }
-                return ret;
-            }
-            ret.add(field.cellAt(x, thisY));
-        }
-        return ret;
-    }
-
-    private ArrayList<Cell> cellsToTop() {
-        var ret = new ArrayList<Cell>();
-        for (int y = thisY + 1; y < 8; y++) {
-            if (field.cellAt(thisX, y).hasFigure()) {
-                if (field.cellAt(thisX, y).getFigure().getColor() != fColor) {
-                    ret.add(field.cellAt(thisX, y));
-                    return ret;
-                }
-                return ret;
-            }
-            ret.add(field.cellAt(thisX, y));
-        }
-        return ret;
-    }
-
-    private ArrayList<Cell> cellsToBot() {
-        var ret = new ArrayList<Cell>();
-        for (int y = thisY - 1; y >= 0; y--) {
-            if (field.cellAt(thisX, y).hasFigure()) {
-                if (field.cellAt(thisX, y).getFigure().getColor() != fColor) {
-                    ret.add(field.cellAt(thisX, y));
-                    return ret;
-                }
-                return ret;
-            }
-            ret.add(field.cellAt(thisX, y));
-        }
-        return ret;
-    }
-
-    private ArrayList<Cell> cellsToTopRight() {
-        var ret = new ArrayList<Cell>();
-        for (int i = 1; i < 8; i++) {
-            Cell temp = field.cellAt(thisX + i, thisY + i);
-            if (temp != null) {
-                if (temp.hasFigure()) {
-                    if (temp.getFigure().getColor() != fColor) {
-                        ret.add(temp);
-                        return ret;
-                    }
-                    return ret;
-                }
-                ret.add(temp);
-            }
-        }
-        return ret;
-    }
-
-    private ArrayList<Cell> cellsToTopLeft() {
-        var ret = new ArrayList<Cell>();
-        for (int i = 1; i < 8; i++) {
-            Cell temp = field.cellAt(thisX - i, thisY + i);
-            if (temp != null) {
-                if (temp.hasFigure()) {
-                    if (temp.getFigure().getColor() != fColor) {
-                        ret.add(temp);
-                        return ret;
-                    }
-                    return ret;
-                }
-                ret.add(temp);
-            }
-        }
-        return ret;
-    }
-
-    private ArrayList<Cell> cellsToBotRight() {
-        var ret = new ArrayList<Cell>();
-        for (int i = 1; i < 8; i++) {
-            Cell temp = field.cellAt(thisX + i, thisY - i);
-            if (temp != null) {
-                if (temp.hasFigure()) {
-                    if (temp.getFigure().getColor() != fColor) {
-                        ret.add(temp);
-                        return ret;
-                    }
-                    return ret;
-                }
-                ret.add(temp);
-            }
-        }
-        return ret;
-    }
-
-    private ArrayList<Cell> cellsToBotLeft() {
-        var ret = new ArrayList<Cell>();
-        for (int i = 1; i < 8; i++) {
-            Cell temp = field.cellAt(thisX - i, thisY - i);
-            if (temp != null) {
-                if (temp.hasFigure()) {
-                    if (temp.getFigure().getColor() != fColor) {
-                        ret.add(temp);
-                        return ret;
-                    }
-                    return ret;
-                }
-                ret.add(temp);
-            }
-        }
-        return ret;
-    }
 
     public void performSpecialMoves() {
         passantMove();
         roqueMove();
     }
+
 
     private void passantMove() {
         if (thisY == 5
@@ -385,7 +254,7 @@ public class ChessRules {
     }
 
     private void roqueMove() {
-        int yOffset = fColor == Figure.Color.WHITE ? 0 : 7;
+        int yOffset = figureColor == Figure.Color.WHITE ? 0 : 7;
 
         if (fType == Figure.Type.KING && thisX == 2
                 && cell.getFigure().getMovesCount() == 1)
@@ -418,19 +287,19 @@ public class ChessRules {
         return true;
     }
 
-    Cell detectKing() {
+    private Cell detectKing() {
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
                 if (field.cellAt(j, i).hasFigure() &&
                         field.cellAt(j, i).getFigure().getType() == Figure.Type.KING
-                        && field.cellAt(j, i).getFigure().getColor() == fColor)
+                        && field.cellAt(j, i).getFigure().getColor() == figureColor)
                     return field.cellAt(j, i);
 
         return null;
     }
 
     public boolean isCheckmate() {
-        fColor = fColor.getOppositeColor();
+        figureColor = figureColor.getOppositeColor();
 
         var cellsWithDanger = cellsWithDangerToKing();
         Cell King = detectKing();
@@ -442,12 +311,46 @@ public class ChessRules {
             for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
                     if (field.cellAt(j, i).hasFigure()
-                            && field.cellAt(j, i).getFigure().getColor() == fColor)
+                            && field.cellAt(j, i).getFigure().getColor() == figureColor)
                         cellsThatSaveTheKing.addAll(new ChessRules(field, field.cellAt(j, i)).PossibleCellsForMoves());
 
             return cellsThatSaveTheKing.isEmpty();
         }
 
         return false;
+    }
+
+    private ArrayList<Cell> cellsToDirection(Horizontal hD, Vertical vD) {
+        var ret = new ArrayList<Cell>();
+        for (int i = 1; i < 8; i++) {
+            Cell temp = field.cellAt(thisX + i * hD.direction, thisY + i * vD.direction);
+            if (temp != null) {
+                if (temp.hasFigure()) {
+                    if (temp.getFigure().getColor() == figureColor)
+                        return ret;
+                    ret.add(temp);
+                    return ret;
+                }
+                ret.add(temp);
+            }
+        }
+        return ret;
+
+    }
+
+    private enum Horizontal {
+        RIGHT(1), LEFT(-1), NO_DIRECTION(0);
+        private int direction;
+        Horizontal(int i) {
+            direction = i;
+        }
+    }
+
+    private enum Vertical {
+        TOP(1), BOT(-1), NO_DIRECTION(0);
+        private int direction;
+        Vertical(int i) {
+            direction = i;
+        }
     }
 }

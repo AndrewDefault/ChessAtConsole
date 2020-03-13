@@ -70,7 +70,7 @@ public class Field {
      * @return cells which are reachable from current position
      */
     public ArrayList<Cell> cellsForCorrectMoves(int startX, int startY) {
-        return ChessRules.get(this, cellAt(startX, startY)).PossibleCellsForMoves();
+        return ChessRules.analysis(this, cellAt(startX, startY)).PossibleCellsForMoves();
     }
     // TODO: 12.03.2020 pawn at end of board
     // TODO: 12.03.2020 logging all moves
@@ -87,7 +87,7 @@ public class Field {
         end.addFigure(start.removeFigure());
         end.getFigure().movePerformed(currentTurnCount++);
 
-        var analyzer = ChessRules.get(this, end);
+        var analyzer = ChessRules.analysis(this, end);
         analyzer.performSpecialMoves();
         return analyzer.isCheckmate();
     }
