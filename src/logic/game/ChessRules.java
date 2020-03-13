@@ -7,6 +7,7 @@ import logic.elements.Figure;
 import java.util.ArrayList;
 import java.util.HashSet;
 // TODO: 13.03.2020 class shouldn't change objects, that are sent to it
+
 /**
  * Provides class that analyze field and cell to calculate right moves.
  */
@@ -149,7 +150,7 @@ public class ChessRules {
         int yOffset = fColor == Figure.Color.WHITE ? 1 : -1;
         int enPassant = fColor == Figure.Color.WHITE ? 4 : 3;
 
-        Figure.Color opColor = fColor.getOposeColor();
+        Figure.Color opColor = fColor.getOppositeColor();
 
         for (int i = 0; i < 2; i++) {
             Cell c = field.cellAt(thisX + xOffset, thisY + yOffset);
@@ -429,7 +430,7 @@ public class ChessRules {
     }
 
     public boolean isCheckmate() {
-        fColor = fColor.getOposeColor();
+        fColor = fColor.getOppositeColor();
 
         var cellsWithDanger = cellsWithDangerToKing();
         Cell King = detectKing();

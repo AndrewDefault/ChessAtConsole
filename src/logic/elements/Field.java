@@ -49,7 +49,7 @@ public class Field {
             cells[i][5].addFigure(new Figure(c, Figure.Type.BISHOP));
             cells[i][6].addFigure(new Figure(c, Figure.Type.HORSE));
             cells[i][7].addFigure(new Figure(c, Figure.Type.ROOK));
-            c = c.getOposeColor();
+            c = c.getOppositeColor();
         }
     }
 

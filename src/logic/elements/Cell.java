@@ -60,17 +60,8 @@ public class Cell {
      */
     @Override
     public String toString() {
-        StringBuilder str = new StringBuilder();
-
         String filler = (x + y) % 2 == 0 ? "■" : " ";
-        str.append(filler);
 
-        if (!hasFigure())
-            str.append(filler).append(filler);
-        else
-            str.append(figureAtCell);
-
-        str.append(filler);
-        return str.toString();
+        return filler + (hasFigure() ? figureAtCell : filler + filler) + filler;
     }
 }

@@ -65,14 +65,13 @@ public class Figure {
     /**
      * Enum for figure color
      */
-    public enum Color {BLACK, WHITE;
+    public enum Color {
+        BLACK, WHITE;
 
-        /**
-         * @return opposite color
-         */
-    public Color getOposeColor(){
-        return this == BLACK ? WHITE : BLACK;
-    }}
+        public Color getOppositeColor() {
+            return this == BLACK ? WHITE : BLACK;
+        }
+    }
 
     /**
      * Enum for different figure types
