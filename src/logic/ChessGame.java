@@ -5,7 +5,10 @@ import logic.elements.Figure;
 import logic.elements.Field;
 import logic.game.ChessTurn;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Class that provides interface for chess game.
@@ -49,12 +52,16 @@ public class ChessGame {
     }
 
     public void logGame(){
-        for (ChessTurn turn : turns) {
-            System.out.print(turn);
+        Date d = new Date();
+
+        try( FileWriter file = new FileWriter("Log game [" + d.getTime() + "]")) {
+            for (ChessTurn turn : turns)
+                file.append(turn.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
-
 
 
     /**

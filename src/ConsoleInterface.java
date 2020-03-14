@@ -45,13 +45,6 @@ public class ConsoleInterface {
         String move;
         ChessTurn turn = null;
 
-        game.performMove(4,1, 4,3);
-        game.performMove(4, 6, 4, 4);
-        game.performMove(3, 0, 7, 4);
-        game.performMove(1, 7, 0, 5);
-        game.performMove(5,0,2,3);
-        game.performMove(0,5,2,4);
-
         System.out.println(game.getField());
 
         do {
@@ -86,7 +79,7 @@ public class ConsoleInterface {
 
         } while (turn == null || Objects.requireNonNull(turn).getTurnResult() != ChessTurn.Result.CHECKMATE);
         System.out.println("Game ended!\n");
-        game.logGame();
+
 
     }
 
@@ -96,6 +89,7 @@ public class ConsoleInterface {
 
         if (turn.getTurnResult() != ChessTurn.Result.DEFAULT) {
             System.out.println("That's a " + turn.getTurnResult() + " to " + turn.getFigure().getColor() + " figures");
+//            game.logGame();
         }
     }
 

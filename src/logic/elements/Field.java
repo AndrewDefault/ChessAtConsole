@@ -25,10 +25,6 @@ public class Field {
      * setup chess field according to rules
      */
     private void setupFigures() {
-//        cells[1][2].addFigure(new Figure(Figure.Color.BLACK, Figure.Type.PAWN));
-//        cells[5][1].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.KING));
-//        cells[7][2].addFigure(new Figure(Figure.Color.BLACK, Figure.Type.KING));
-//        cells[6][4].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.PAWN));
         for (int x = 0; x < 8; x++) {
             cells[1][x].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.PAWN));
             cells[6][x].addFigure(new Figure(Figure.Color.BLACK, Figure.Type.PAWN));

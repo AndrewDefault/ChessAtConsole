@@ -52,6 +52,9 @@ public class ChessRules {
         turn.setTurnResult(getResult(field,end));
     }
 
+
+    //*******************************************************************************
+
     private static ChessTurn.Promotion isTurnPromotional(Cell end) {
         if ((end.getY() == 0 || end.getY() == 7) && end.getFigure().getType() == Figure.Type.PAWN)
             return ChessTurn.Promotion.YES;
