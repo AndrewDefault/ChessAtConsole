@@ -49,15 +49,12 @@ public class ChessGame {
      * Target's coordinates must refer to only correct cells (no same color figure or unreachable cells).
      */
     public void performMove(int startX, int startY, int lastX, int lastY) {
-        boolean isCheck = field.moveFigure(startX, startY, lastX, lastY);
+        boolean isCheckmate = field.moveFigure(startX, startY, lastX, lastY);
 
-        if (!isCheck)
-            whoMoves = whoMoves == Figure.Color.WHITE
-                    ? Figure.Color.BLACK
-                    : Figure.Color.WHITE;
+        if (!isCheckmate)
+            whoMoves = whoMoves.getOppositeColor();
         else
             endGame();
-
     }
 
     /**
@@ -83,7 +80,7 @@ public class ChessGame {
         if (field.cellAt(startX, startY).hasFigure()
                 && field.cellAt(startX, startY).getFigure().getColor() == whoMoves)
             return field.cellsForCorrectMoves(startX, startY);
-        return null;
+        return new ArrayList<>();
     }
 
     /**

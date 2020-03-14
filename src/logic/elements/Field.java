@@ -10,24 +10,14 @@ import java.util.ArrayList;
 public class Field {
 
     Cell[][] cells;
-    int currentTurnCount;
-
 
     public Field() {
-        currentTurnCount = 0;
         cells = new Cell[8][8];
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
                 cells[i][j] = new Cell(j, i);
 
         setupFigures();
-    }
-
-    /**
-     * @return how many moves were already made
-     */
-    public int getCurrentTurnCount() {
-        return currentTurnCount;
     }
 
     /**
@@ -70,7 +60,7 @@ public class Field {
      * @return cells which are reachable from current position
      */
     public ArrayList<Cell> cellsForCorrectMoves(int startX, int startY) {
-        return ChessRules.analysis(this, cellAt(startX, startY)).PossibleCellsForMoves();
+        return ChessRules.correctMovesFromCell(this,  cellAt(startX, startY));
     }
     // TODO: 12.03.2020 pawn at end of board
     // TODO: 12.03.2020 logging all moves
@@ -81,15 +71,12 @@ public class Field {
      * @return true if after move there is a checkmate
      */
     public boolean moveFigure(int startX, int startY, int endX, int endY) {
-        Cell start = cells[startY][startX];
-        Cell end = cells[endY][endX];
+        Cell start = cellAt(startX,startY);
+        Cell end = cellAt(endX,endY);
 
-        end.addFigure(start.removeFigure());
-        end.getFigure().movePerformed(currentTurnCount++);
+        ChessRules.moveFiguresCorrectly(this, start, end);
 
-        var analyzer = ChessRules.analysis(this, end);
-        analyzer.performSpecialMoves();
-        return analyzer.isCheckmate();
+        return ChessRules.isCheckmate(this, end.getFigure().getColor());
     }
 
     /**
@@ -107,7 +94,6 @@ public class Field {
             }
             str.append("\n  ").append((y == 0) ? "└────┴────┴────┴────┴────┴────┴────┴────┘\n"
                     : "├────┼────┼────┼────┼────┼────┼────┼────┤\n");
-
         }
         str.append("    A    B    C    D    E    F    G    H   \n");
         return str.toString();

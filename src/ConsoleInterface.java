@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 public class ConsoleInterface {
 
     private ChessGame game;
+    StringBuffer log = new StringBuffer();
 
     public static void main(String[] args) {
 
@@ -27,6 +28,8 @@ public class ConsoleInterface {
                     return;
                 case "start":
                     new ConsoleInterface().startNewGame();
+
+
                 default:
             }
         }
@@ -37,6 +40,7 @@ public class ConsoleInterface {
      */
     void startNewGame() {
         game = new ChessGame();
+        log = new StringBuffer();
 
         Scanner in = new Scanner(System.in);
         System.out.println(game.getField());
@@ -48,6 +52,7 @@ public class ConsoleInterface {
             if (Pattern.matches("([a-hA-H][1-8]\\s+[a-hA-H][1-8])|quit", turn)) {
                 if (turn.equals("quit")) {
                     System.out.println("\nGame ended!\n");
+
                     return;
                 }
 
@@ -64,7 +69,6 @@ public class ConsoleInterface {
                     continue;
                 }
                 game.performMove(args[0], args[1], args[2], args[3]);
-
                 System.out.println(game.getField());
             }
         }

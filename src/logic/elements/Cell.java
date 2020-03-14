@@ -1,5 +1,7 @@
 package logic.elements;
 
+import logic.game.ChessRules;
+
 /**
  * Class that provides cell for field
  */
@@ -37,6 +39,7 @@ public class Cell {
         var ret = figureAtCell;
         figureAtCell = null;
         return ret;
+
     }
 
     /**
