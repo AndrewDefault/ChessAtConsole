@@ -79,6 +79,7 @@ public class Field {
         return ChessRules.isCheckmate(this, end.getFigure().getColor());
     }
 
+
     /**
      * @return text view of chess board
      */
