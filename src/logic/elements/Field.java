@@ -1,6 +1,7 @@
 package logic.elements;
 
 import logic.game.ChessRules;
+import logic.game.ChessTurn;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,10 @@ public class Field {
      * setup chess field according to rules
      */
     private void setupFigures() {
+//        cells[1][2].addFigure(new Figure(Figure.Color.BLACK, Figure.Type.PAWN));
+//        cells[5][1].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.KING));
+//        cells[7][2].addFigure(new Figure(Figure.Color.BLACK, Figure.Type.KING));
+//        cells[6][4].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.PAWN));
         for (int x = 0; x < 8; x++) {
             cells[1][x].addFigure(new Figure(Figure.Color.WHITE, Figure.Type.PAWN));
             cells[6][x].addFigure(new Figure(Figure.Color.BLACK, Figure.Type.PAWN));
@@ -59,7 +64,7 @@ public class Field {
      *Coordinates must refer to cell with figure!
      * @return cells which are reachable from current position
      */
-    public ArrayList<Cell> cellsForCorrectMoves(int startX, int startY) {
+    public ArrayList<Cell> reachableCellsFromPosition(int startX, int startY) {
         return ChessRules.correctMovesFromCell(this,  cellAt(startX, startY));
     }
     // TODO: 12.03.2020 pawn at end of board
@@ -70,13 +75,11 @@ public class Field {
      * start cell must contain figure. Target cell must be reachable from start cell.
      * @return true if after move there is a checkmate
      */
-    public boolean moveFigure(int startX, int startY, int endX, int endY) {
+    public ChessTurn makeTurn(int startX, int startY, int endX, int endY) {
         Cell start = cellAt(startX,startY);
         Cell end = cellAt(endX,endY);
 
-        ChessRules.moveFiguresCorrectly(this, start, end);
-
-        return ChessRules.isCheckmate(this, end.getFigure().getColor());
+        return ChessRules.performChessTurn(this, start, end);
     }
 
 
@@ -96,7 +99,11 @@ public class Field {
             str.append("\n  ").append((y == 0) ? "└────┴────┴────┴────┴────┴────┴────┴────┘\n"
                     : "├────┼────┼────┼────┼────┼────┼────┼────┤\n");
         }
-        str.append("    A    B    C    D    E    F    G    H   \n");
+        str.append("    A    B    C    D    E    F    G    H  ");
         return str.toString();
+    }
+
+    public void addPromotionFigure(ChessTurn turn, String move) {
+        ChessRules.addPromotionalFigure(this,turn,move);
     }
 }

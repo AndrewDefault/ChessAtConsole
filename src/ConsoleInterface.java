@@ -1,5 +1,7 @@
 import logic.ChessGame;
+import logic.game.ChessTurn;
 
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -9,7 +11,6 @@ import java.util.regex.Pattern;
 public class ConsoleInterface {
 
     private ChessGame game;
-    StringBuffer log = new StringBuffer();
 
     public static void main(String[] args) {
 
@@ -29,7 +30,6 @@ public class ConsoleInterface {
                 case "start":
                     new ConsoleInterface().startNewGame();
 
-
                 default:
             }
         }
@@ -40,23 +40,32 @@ public class ConsoleInterface {
      */
     void startNewGame() {
         game = new ChessGame();
-        log = new StringBuffer();
 
         Scanner in = new Scanner(System.in);
+        String move;
+        ChessTurn turn = null;
+
+        game.performMove(4,1, 4,3);
+        game.performMove(4, 6, 4, 4);
+        game.performMove(3, 0, 7, 4);
+        game.performMove(1, 7, 0, 5);
+        game.performMove(5,0,2,3);
+        game.performMove(0,5,2,4);
+
         System.out.println(game.getField());
-        while (game.isRunning()) {
-            System.out.print(game.whoMovesNow().toString().toLowerCase() + "'s turn: ");
 
-            String turn = in.nextLine();
+        do {
+            System.out.print(game.whoMovesNow() + " figures turn: ");
 
-            if (Pattern.matches("([a-hA-H][1-8]\\s+[a-hA-H][1-8])|quit", turn)) {
-                if (turn.equals("quit")) {
+            move = in.nextLine();
+
+            if (Pattern.matches("([a-hA-H][1-8]\\s+[a-hA-H][1-8])|quit", move)) {
+                if (move.equals("quit")) {
                     System.out.println("\nGame ended!\n");
-
                     return;
                 }
 
-                int[] args = transferCoordinates(turn);
+                int[] args = transferCoordinates(move);
 
                 if (game.cellContainsCorrectFigureForMove(args[0], args[1]).isEmpty()) {
                     System.out.println(game.getField());
@@ -68,11 +77,43 @@ public class ConsoleInterface {
                     System.out.println("Wrong target!");
                     continue;
                 }
-                game.performMove(args[0], args[1], args[2], args[3]);
+                turn = game.performMove(args[0], args[1], args[2], args[3]);
+                analyzeTurn(turn);
+
                 System.out.println(game.getField());
-            }
+            } else
+                System.out.println("Wrong move format! Try again.");
+
+        } while (turn == null || Objects.requireNonNull(turn).getTurnResult() != ChessTurn.Result.CHECKMATE);
+        System.out.println("Game ended!\n");
+        game.logGame();
+
+    }
+
+    private void analyzeTurn(ChessTurn turn) {
+        if (turn.getPromotion() == ChessTurn.Promotion.YES)
+            handlePawnPromotion(turn);
+
+        if (turn.getTurnResult() != ChessTurn.Result.DEFAULT) {
+            System.out.println("That's a " + turn.getTurnResult() + " to " + turn.getFigure().getColor() + " figures");
         }
-        congratsTheWinner();
+    }
+
+    private void handlePawnPromotion(ChessTurn turn) {
+        Scanner in = new Scanner(System.in);
+        String move;
+
+        System.out.print(turn.getFigure().getColor() + " can promote pawn\n");
+        do {
+            System.out.print("Type figure name (q,r,b,h,p): ");
+            move = in.nextLine();
+
+            if (Pattern.matches("[qQrRbBhHpP]", move))
+                game.addPromotionFigure(turn, move);
+            else
+                System.out.println("Wrong figure name! Try again.");
+
+        } while (!Pattern.matches("[qQrRbBhHpP]", move));
     }
 
     /**
@@ -91,14 +132,4 @@ public class ConsoleInterface {
         };
     }
 
-    /**
-     * Method to show winner
-     */
-    void congratsTheWinner() {
-        System.out.println(game.whoIsWinner() + """
-                 is a winner!
-                Congrats!
-
-                """);
-    }
 }

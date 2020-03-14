@@ -67,4 +67,8 @@ public class Cell {
 
         return filler + (hasFigure() ? figureAtCell : filler + filler) + filler;
     }
+
+    public String letterNumbCoordinates(){
+        return (char) ('A' + getX()) + String.valueOf(getY()+1);
+    }
 }
