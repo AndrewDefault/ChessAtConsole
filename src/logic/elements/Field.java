@@ -10,7 +10,8 @@ import java.util.ArrayList;
  */
 public class Field {
 
-    Cell[][] cells;
+
+    final Cell[][] cells;
 
     public Field() {
         cells = new Cell[8][8];

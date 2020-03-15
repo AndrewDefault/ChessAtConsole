@@ -1,15 +1,14 @@
 package logic.elements;
 
-import logic.game.ChessRules;
+import java.util.Comparator;
 
 /**
  * Class that provides cell for field
  */
 public class Cell {
-
     Figure figureAtCell;
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public Cell(int x, int y) {
         this.x = x;
@@ -33,17 +32,18 @@ public class Cell {
 
     /**
      * Removes figure from  cell
+     *
      * @return Figure, that was in cell
      */
     public Figure removeFigure() {
         var ret = figureAtCell;
         figureAtCell = null;
         return ret;
-
     }
 
     /**
      * Add Figure to cell
+     *
      * @param fig figure
      */
     public void addFigure(Figure fig) {
@@ -68,7 +68,7 @@ public class Cell {
         return filler + (hasFigure() ? figureAtCell : filler + filler) + filler;
     }
 
-    public String letterNumbCoordinates(){
-        return (char) ('A' + getX()) + String.valueOf(getY()+1);
+    public String letterNumbCoordinates() {
+        return (char) ('A' + getX()) + String.valueOf(getY() + 1);
     }
 }

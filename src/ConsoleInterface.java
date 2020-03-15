@@ -95,19 +95,19 @@ public class ConsoleInterface {
 
     private void handlePawnPromotion(ChessTurn turn) {
         Scanner in = new Scanner(System.in);
-        String move;
+        String figureLetter;
 
         System.out.print(turn.getFigure().getColor() + " can promote pawn\n");
         do {
             System.out.print("Type figure name (q,r,b,h,p): ");
-            move = in.nextLine();
+            figureLetter = in.nextLine();
 
-            if (Pattern.matches("[qQrRbBhHpP]", move))
-                game.addPromotionFigure(turn, move);
+            if (Pattern.matches("[qQrRbBhHpP]", figureLetter))
+                game.setPromotionFigure(turn, figureLetter);
             else
                 System.out.println("Wrong figure name! Try again.");
 
-        } while (!Pattern.matches("[qQrRbBhHpP]", move));
+        } while (!Pattern.matches("[qQrRbBhHpP]", figureLetter));
     }
 
     /**

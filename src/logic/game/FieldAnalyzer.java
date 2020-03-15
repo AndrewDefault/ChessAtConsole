@@ -9,12 +9,12 @@ import java.util.HashSet;
 
 class FieldAnalyzer {
 
-    Field field;
-    Figure.Type fType;
-    Figure.Color figureColor;
-    Cell cell;
-    int thisX;
-    int thisY;
+    private Field field;
+    private Figure.Type fType;
+    private Figure.Color figureColor;
+    private Cell cell;
+    private int thisX;
+    private int thisY;
 
 
     FieldAnalyzer(Field field, Cell cellForAnalysis) {
@@ -31,7 +31,7 @@ class FieldAnalyzer {
         this.figureColor = col;
     }
 
-    boolean isPat(){
+    boolean isPat() {
         var cellsThatSaveTheKing = new HashSet<Cell>();
         if (!isCheck()) {
             for (int i = 0; i < 8; i++)
@@ -106,23 +106,23 @@ class FieldAnalyzer {
 
     private ArrayList<Cell> bishopMove() {
         return new ArrayList<>() {{
-            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.TOP));
-            addAll(cellsToDirection(Horizontal.LEFT, Vertical.TOP));
-            addAll(cellsToDirection(Horizontal.LEFT, Vertical.BOT));
-            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.BOT));
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.UP));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.UP));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.DOWN));
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.DOWN));
         }};
     }
 
     private ArrayList<Cell> queenMove() {
         return new ArrayList<>() {{
             addAll(cellsToDirection(Horizontal.RIGHT, Vertical.NO_DIRECTION));
-            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.TOP));
-            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.TOP));
-            addAll(cellsToDirection(Horizontal.LEFT, Vertical.TOP));
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.UP));
+            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.UP));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.UP));
             addAll(cellsToDirection(Horizontal.LEFT, Vertical.NO_DIRECTION));
-            addAll(cellsToDirection(Horizontal.LEFT, Vertical.BOT));
-            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.BOT));
-            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.BOT));
+            addAll(cellsToDirection(Horizontal.LEFT, Vertical.DOWN));
+            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.DOWN));
+            addAll(cellsToDirection(Horizontal.RIGHT, Vertical.DOWN));
         }};
     }
 
@@ -143,9 +143,9 @@ class FieldAnalyzer {
     private ArrayList<Cell> rookMove() {
         return new ArrayList<>() {{
             addAll(cellsToDirection(Horizontal.RIGHT, Vertical.NO_DIRECTION));
-            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.TOP));
+            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.UP));
             addAll(cellsToDirection(Horizontal.LEFT, Vertical.NO_DIRECTION));
-            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.BOT));
+            addAll(cellsToDirection(Horizontal.NO_DIRECTION, Vertical.DOWN));
         }};
     }
 
@@ -179,7 +179,7 @@ class FieldAnalyzer {
         }
 
         var classicMoves = cellsToDirection(Horizontal.NO_DIRECTION,
-                figureColor == Figure.Color.WHITE ? Vertical.TOP : Vertical.BOT);
+                figureColor == Figure.Color.WHITE ? Vertical.UP : Vertical.DOWN);
 
         if (!classicMoves.isEmpty() && classicMoves.get(classicMoves.size() - 1).hasFigure())
             classicMoves.remove(classicMoves.size() - 1);
@@ -230,13 +230,12 @@ class FieldAnalyzer {
         Figure tempDeletedFig = end.removeFigure();
         end.addFigure(cell.removeFigure());
 
-        Cell King = detectKing();
-        var danger = cellsWithDangerToKing();
+        var ret = isCheck();
 
         cell.addFigure(end.removeFigure());
         end.addFigure(tempDeletedFig);
 
-        return danger.contains(King);
+        return ret;
     }
 
     private Cell detectKing() {
@@ -278,7 +277,7 @@ class FieldAnalyzer {
     }
 
     private enum Vertical {
-        TOP(1), BOT(-1), NO_DIRECTION(0);
+        UP(1), DOWN(-1), NO_DIRECTION(0);
         private int direction;
 
         Vertical(int i) {

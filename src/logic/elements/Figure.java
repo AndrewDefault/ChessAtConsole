@@ -4,8 +4,8 @@ package logic.elements;
  * Provides class for different chess figures
  */
 public class Figure {
-    private Color color;
-    private Type type;
+    private final Color color;
+    private final Type type;
     private int movesCount;
     private int lastTurn;
 

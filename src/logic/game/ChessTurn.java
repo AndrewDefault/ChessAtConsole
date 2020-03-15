@@ -4,15 +4,15 @@ import logic.elements.Cell;
 import logic.elements.Figure;
 
 public class ChessTurn {
-    TurnType type = TurnType.SILENT;
-    Result turnResult = Result.DEFAULT;
-    Promotion promotion = Promotion.NO;
+    private TurnType type = TurnType.SILENT;
+    private Result turnResult = Result.DEFAULT;
+    private Promotion promotion = Promotion.NO;
 
-    Figure figure = null;
-    Figure promotionFigure = null;
+    private Figure figure = null;
+    private Figure promotionFigure = null;
 
-    Cell from;
-    Cell to;
+    private Cell from;
+    private Cell to;
 
     ChessTurn(Cell from, Cell to) {
         this.from = from;
@@ -23,7 +23,7 @@ public class ChessTurn {
         return figure;
     }
 
-    public void setFigure(Figure figure) {
+    void setFigure(Figure figure) {
         this.figure = figure;
     }
 
@@ -31,7 +31,7 @@ public class ChessTurn {
         return type;
     }
 
-    public void setType(TurnType type) {
+    void setType(TurnType type) {
         this.type = type;
     }
 
@@ -39,7 +39,7 @@ public class ChessTurn {
         return turnResult;
     }
 
-    public void setTurnResult(Result turnResult) {
+    void setTurnResult(Result turnResult) {
         this.turnResult = turnResult;
     }
 
@@ -47,7 +47,7 @@ public class ChessTurn {
         return promotion;
     }
 
-    public void setPromotion(Promotion promotion) {
+    void setPromotion(Promotion promotion) {
         this.promotion = promotion;
     }
 
@@ -55,7 +55,7 @@ public class ChessTurn {
         return promotionFigure;
     }
 
-    public void setPromotionFigure(Figure promotionFigure) {
+    void setPromotionFigure(Figure promotionFigure) {
         this.promotionFigure = promotionFigure;
     }
 

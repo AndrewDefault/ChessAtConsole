@@ -35,17 +35,17 @@ public class ChessRules {
         return new FieldAnalyzer(field, cellForAnalysis).possibleCellsForMoves();
     }
 
-    public static void addPromotionalFigure(Field field, ChessTurn turn, String move) {
+    public static void addPromotionalFigure(Field field, ChessTurn turn, String figureLetter) {
         Cell end = turn.getDestinationCell();
 
         end.addFigure(new Figure(end.getFigure().getColor(),
-                switch (move) {
+                switch (figureLetter) {
                     case "q", "Q" -> Figure.Type.QUEEN;
                     case "r", "R" -> Figure.Type.ROOK;
                     case "b", "B" -> Figure.Type.BISHOP;
                     case "h", "H" -> Figure.Type.HORSE;
                     case "p", "P" -> Figure.Type.PAWN;
-                    default -> throw new IllegalStateException("Unexpected value: " + move);
+                    default -> throw new IllegalStateException("Unexpected value: " + figureLetter);
                 }
         ));
         turn.setPromotionFigure(end.getFigure());

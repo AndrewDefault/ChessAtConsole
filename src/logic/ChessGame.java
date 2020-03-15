@@ -16,7 +16,7 @@ import java.util.Date;
 public class ChessGame {
     private Figure.Color whoMoves;
     private Field field;
-    ArrayList<ChessTurn> turns;
+    private ArrayList<ChessTurn> turns;
 
     /**
      * Constructs new game and field
@@ -88,7 +88,7 @@ public class ChessGame {
         return r.contains(field.cellAt(targetX, targetY));
     }
 
-    public void addPromotionFigure(ChessTurn turn, String move) {
+    public void setPromotionFigure(ChessTurn turn, String move) {
         field.addPromotionFigure(turn, move);
 
     }
