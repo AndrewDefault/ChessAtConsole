@@ -7,12 +7,19 @@ import logic.elements.Figure;
 import java.util.ArrayList;
 
 /**
- * Provides class that analyze field and cell to calculate right moves.
+ * Provides class with static methods to perform main chess moves or to get cells for move
  */
 public class ChessRules {
     static int TurnsCount = 0;
 
-
+    /**
+     * perform turn and analyze it
+     *
+     * @param field field of game
+     * @param start start cell (with figure)
+     * @param end   end cell
+     * @return ChessTurn object (with information about action figure, type of move, result of this turn)
+     */
     public static ChessTurn performChessTurn(Field field, Cell start, Cell end) {
         ChessTurn turn = new ChessTurn(start, end);
 
@@ -25,16 +32,24 @@ public class ChessRules {
     }
 
     /**
-     * Static method for creating a new copy of analyzer with specified parameters
+     * Static method for getting cells that can be reached from this cell
      *
      * @param field           field for analysis
      * @param cellForAnalysis cell from which analysis is started (mandatory: cell must contain Figure)
-     * @return new copy of ChessMovesAnalyzer
+     * @return List of Cells, that can be reached from cellForAnalysis
      */
     public static ArrayList<Cell> correctMovesFromCell(Field field, Cell cellForAnalysis) {
         return new FieldAnalyzer(field, cellForAnalysis).possibleCellsForMoves();
     }
 
+    /**
+     * method to handle promotion of the pawn
+     * and update turn and result of the turn (possible pat, mate or check)
+     *
+     * @param field        field where action is performed
+     * @param turn         turn, on which action was performed
+     * @param figureLetter string that contains letter of new figure for promotion
+     */
     public static void addPromotionalFigure(Field field, ChessTurn turn, String figureLetter) {
         Cell end = turn.getDestinationCell();
 
@@ -49,7 +64,7 @@ public class ChessRules {
                 }
         ));
         turn.setPromotionFigure(end.getFigure());
-        turn.setTurnResult(getResult(field,end));
+        turn.setTurnResult(getResult(field, end));
     }
 
 

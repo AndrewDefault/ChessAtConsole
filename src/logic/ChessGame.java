@@ -1,8 +1,8 @@
 package logic;
 
 import logic.elements.Cell;
-import logic.elements.Figure;
 import logic.elements.Field;
+import logic.elements.Figure;
 import logic.game.ChessTurn;
 
 import java.io.FileWriter;
@@ -42,7 +42,6 @@ public class ChessGame {
      * Moves figure from startX startY to lastX lastY
      * Starting coordinates must refer to cell with figure with current turn color.
      * Target's coordinates must refer to only correct cells (no same color figure or unreachable cells).
-
      */
     public ChessTurn performMove(int startX, int startY, int lastX, int lastY) {
         var turn = field.makeTurn(startX, startY, lastX, lastY);
@@ -51,10 +50,10 @@ public class ChessGame {
         return turn;
     }
 
-    public void logGame(){
+    public void logGame() {
         Date d = new Date();
 
-        try( FileWriter file = new FileWriter("Log game [" + d.getTime() + "]")) {
+        try (FileWriter file = new FileWriter("Log game [" + d.getTime() + "]")) {
             for (ChessTurn turn : turns)
                 file.append(turn.toString());
         } catch (IOException e) {
@@ -66,6 +65,7 @@ public class ChessGame {
 
     /**
      * Defines if cell contains correct figure for this turn's move
+     *
      * @return array with cells, which are reachable from current position.
      */
     public ArrayList<Cell> cellContainsCorrectFigureForMove(int startX, int startY) {
@@ -77,8 +77,9 @@ public class ChessGame {
 
     /**
      * Defines if target cell is reachable from current position.
-     * @param startX current coordinate
-     * @param startY current coordinate
+     *
+     * @param startX  current coordinate
+     * @param startY  current coordinate
      * @param targetX target coordinate
      * @param targetY target coordinate
      * @return true if target cell is reachable from current position

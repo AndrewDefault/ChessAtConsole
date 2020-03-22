@@ -58,23 +58,23 @@ public class Field {
     }
 
     /**
-     *Coordinates must refer to cell with figure!
+     * Coordinates must refer to cell with figure!
+     *
      * @return cells which are reachable from current position
      */
     public ArrayList<Cell> reachableCellsFromPosition(int startX, int startY) {
-        return ChessRules.correctMovesFromCell(this,  cellAt(startX, startY));
+        return ChessRules.correctMovesFromCell(this, cellAt(startX, startY));
     }
-    // TODO: 12.03.2020 pawn at end of board
-    // TODO: 12.03.2020 logging all moves
 
     /**
      * Move figure from start to end and make special moves (en passent and roque)
      * start cell must contain figure. Target cell must be reachable from start cell.
+     *
      * @return true if after move there is a checkmate
      */
     public ChessTurn makeTurn(int startX, int startY, int endX, int endY) {
-        Cell start = cellAt(startX,startY);
-        Cell end = cellAt(endX,endY);
+        Cell start = cellAt(startX, startY);
+        Cell end = cellAt(endX, endY);
 
         return ChessRules.performChessTurn(this, start, end);
     }
@@ -101,6 +101,6 @@ public class Field {
     }
 
     public void addPromotionFigure(ChessTurn turn, String move) {
-        ChessRules.addPromotionalFigure(this,turn,move);
+        ChessRules.addPromotionalFigure(this, turn, move);
     }
 }

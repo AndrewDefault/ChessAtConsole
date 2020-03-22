@@ -5,16 +5,14 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+
 /**
  * Class with simple console interface for playing chess game.
  */
 public class ConsoleInterface {
-
     private ChessGame game;
 
     public static void main(String[] args) {
-
-        new ConsoleInterface().startNewGame(); //tem line
 
         Scanner in = new Scanner(System.in);
         while (true) {
@@ -70,6 +68,7 @@ public class ConsoleInterface {
                     System.out.println("Wrong target!");
                     continue;
                 }
+
                 turn = game.performMove(args[0], args[1], args[2], args[3]);
                 analyzeTurn(turn);
 
@@ -89,10 +88,14 @@ public class ConsoleInterface {
 
         if (turn.getTurnResult() != ChessTurn.Result.DEFAULT) {
             System.out.println("That's a " + turn.getTurnResult() + " to " + turn.getFigure().getColor() + " figures");
-//            game.logGame();
         }
     }
 
+    /**
+     * Method to handle promotion of pawn
+     *
+     * @param turn turn in which promotion was made (modified after this method's call)
+     */
     private void handlePawnPromotion(ChessTurn turn) {
         Scanner in = new Scanner(System.in);
         String figureLetter;

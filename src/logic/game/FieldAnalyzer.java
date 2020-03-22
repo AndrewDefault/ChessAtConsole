@@ -7,6 +7,10 @@ import logic.elements.Figure;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+
+/**
+ * Class that provides all kind of analysis' for given field and cell
+ */
 class FieldAnalyzer {
 
     private Field field;

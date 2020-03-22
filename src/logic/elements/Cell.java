@@ -1,14 +1,12 @@
 package logic.elements;
 
-import java.util.Comparator;
-
 /**
  * Class that provides cell for field
  */
 public class Cell {
-    Figure figureAtCell;
     private final int x;
     private final int y;
+    private Figure figureAtCell;
 
     public Cell(int x, int y) {
         this.x = x;
@@ -68,6 +66,9 @@ public class Cell {
         return filler + (hasFigure() ? figureAtCell : filler + filler) + filler;
     }
 
+    /**
+     * @return coordinates of cell in formant [letter][number]
+     */
     public String letterNumbCoordinates() {
         return (char) ('A' + getX()) + String.valueOf(getY() + 1);
     }

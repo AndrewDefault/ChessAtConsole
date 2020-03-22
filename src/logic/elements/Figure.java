@@ -14,6 +14,8 @@ public class Figure {
         this.type = type;
         movesCount = 0;
         lastTurn = 0;
+
+
     }
 
     public int getLastTurn() {
@@ -34,6 +36,7 @@ public class Figure {
 
     /**
      * increases number of moves and set id of last turn with this figure
+     *
      * @param idOfLastTurn id of last turn
      */
     public void movePerformed(int idOfLastTurn) {

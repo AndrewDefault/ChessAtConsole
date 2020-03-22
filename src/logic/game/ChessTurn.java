@@ -3,6 +3,10 @@ package logic.game;
 import logic.elements.Cell;
 import logic.elements.Figure;
 
+/**
+ * Class that provides information about performed turn:
+ * Turn's figure, result of turn, was it attack or not and etc.
+ */
 public class ChessTurn {
     private TurnType type = TurnType.SILENT;
     private Result turnResult = Result.DEFAULT;
@@ -63,22 +67,36 @@ public class ChessTurn {
         return to;
     }
 
+    public Cell getFromCell(){
+        return from;
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        str.append(figure.getColor().toString()).append(" ").append(figure.getType()).append(" moves in ")
-                .append(type).append(" from ").append(from.letterNumbCoordinates()).
-                append(" to ").append(to.letterNumbCoordinates()).append(".\n");
-        if (promotion == Promotion.YES) {
-            str.append("PAWN got promotion and turned into ").append(promotionFigure.getType()).append(".\n");
+        str.append(getFigure().getColor().toString())
+                .append(" ")
+                .append(getFigure().getType())
+                .append(" moves in ")
+                .append(getType()).append(" from ")
+                .append(getFromCell().letterNumbCoordinates())
+                .append(" to ")
+                .append(to.letterNumbCoordinates())
+                .append(".\n");
+        if (getPromotion() == Promotion.YES) {
+            str.append("PAWN got promotion and turned into ")
+                    .append(getPromotionFigure().getType())
+                    .append(".\n");
         }
-        if (turnResult != Result.DEFAULT) {
-            str.append("Result of turn: ").append(turnResult).append(" to ").append(figure.getColor().getOppositeColor())
+        if (getTurnResult() != Result.DEFAULT) {
+            str.append("Result of turn: ")
+                    .append(getTurnResult())
+                    .append(" to ")
+                    .append(getFigure().getColor().getOppositeColor())
                     .append(" figures.\n");
         }
         str.append("\n");
         return str.toString();
-
     }
 
     public enum TurnType {CAPTURE, SILENT, ROQUE, ENPASSANT}
